@@ -1,0 +1,73 @@
+.phoneinput {
+  max-width: 113px;
+}
+
+.phoneinput .selected-flag {
+  border-radius: 0;
+}
+
+.phoneinput .flag-dropdown .selected-flag {
+  width: 113px;
+}
+
+.phoneinput .selected-flag .flag {
+  left: 14px;
+}
+
+.phoneinput .selected-flag .arrow {
+  position: relative;
+  top: 51%;
+  margin-top: -1px;
+  left: 76px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid #0000;
+  border-right: 6px solid #0000;
+  border-top: 6px solid #555;
+}
+
+.phoneinput .selected-flag .arrow.up {
+  border-bottom-width: 6px;
+}
+
+.phoneinput .form-control {
+  padding: 18.5px 14px 18.5px 44px;
+  border-radius: 0;
+  border: 1px solid #828282;
+  background-color: transparent;
+  width: 115px;
+}
+
+.phoneinput .form-control:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.phoneinput-2 .flag-dropdown {
+  display: none;
+}
+
+.phoneinput-2 .form-control {
+  min-width: 100%;
+  min-height: 56px;
+  padding: 18px 20px;
+  border-radius: 0;
+  border: 1px solid #828282;
+  background-color: transparent;
+}
+
+.phoneinput-2 .form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border: 2px solid #0d47a1;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+
+@media (max-width: 768px) {
+  .phoneinput-2 .form-control {
+    width: 75%;
+    padding: 18px 16px;
+  }
+}
