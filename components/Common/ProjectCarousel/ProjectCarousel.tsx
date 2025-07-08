@@ -101,7 +101,7 @@ const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
     return (
       <div className="w-full px-[20px] sm:px-12 lg:px-24">
         <div className="max-w-[1150px] mx-auto relative sm:h-[800px] lg:h-[800px] overflow-hidden">
-          {renderSlideContent(project, true)}
+          {renderSlideContent(project)}
         </div>
       </div>
     );
@@ -127,7 +127,7 @@ const ProjectCarousel: React.FC<ProjectCarouselProps> = ({
               key={project.id}
               className={`absolute flex justify-center items-center inset-0 transition-all duration-750 ease-in-out ${posClasses}`}
             >
-              {renderSlideContent(project, isActive)}
+              {renderSlideContent(project)}
             </div>
           );
         })}
