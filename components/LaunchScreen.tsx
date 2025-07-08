@@ -1,9 +1,17 @@
 // components/LaunchScreen.tsx
 "use client";
- 
-import Image from "next/image";
 
-const LaunchScreen: React.FC = () => { 
+import { useCallback, useState } from "react";
+import Image from "next/image";
+import EnquireNowModal from "./Common/EnquireNowModal";
+
+const LaunchScreen: React.FC = () => {
+  const [isEnquireNowOpen, setIsEnquireNowOpen] = useState(false);
+  const scrollToTop = useCallback(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <div className="w-full bg-black overflow-x-hidden">
@@ -100,96 +108,72 @@ const LaunchScreen: React.FC = () => {
       </div>
 
       {/* ─────────── DESKTOP LAYOUT (unchanged classes, re-structured) ─────────── */}
-      <div className="hidden md:flex w-full">
-        {/*
-         1) Again, everything sits inside one “relative w-full h-screen overflow-hidden” wrapper.
-         2) Move the icon strip and bottom bar inside that same container as absolutely-positioned elements.
-         3) Icon strip sits at bottom-[80px], bottom bar at bottom-0.
-        */}
-        <div className="relative w-full h-screen overflow-hidden">
-          {/* Hero Background (desktop) */}
-          <Image
-            src="/assets/onePage/illustration-bg.svg"
-            alt="Hero Background (desktop)"
-            fill
-            className="object-cover"
-          />
+      {/* ─────────── DESKTOP LAYOUT (FIXED FOR ZOOM) ─────────── */}
+      <div className="hidden md:block relative w-full min-h-screen overflow-hidden">
+        {/* Background */}
+        <Image
+          src="/assets/onePage/illustration-bg.svg"
+          alt="Background"
+          fill
+          className="object-cover"
+        />
 
-          {/* Desktop Overlay: logo + tagline + “BE THE FIRST TO KNOW” + Button */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-            {/* Logo (desktop: full-width SVG) */}
-            <div>
+        {/* MAIN CONTENT AREA WITH SAFE SPACING */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {/* This container ensures minimum spacing */}
+          <div className="flex flex-col items-center w-full" style={{ minHeight: '60vh' }}>
+            
+            {/* Logo */}
+            <div className="w-full max-w-[60vw] mb-8">
               <Image
                 src="/assets/onePage/desktop_logo.svg"
                 alt="RATTHA REALTY"
                 width={958}
                 height={238}
-                className="object-contain"
+                className="w-full h-auto"
               />
             </div>
-
-            {/* “BE THE FIRST TO KNOW” (desktop) */}
-            <div className="text-[14px] font-medium font-inter tracking-wide text-white pt-[24px] pb-[40px]">
+            <div className="text-sm font-medium mb-10 text-white">
               BE THE FIRST TO KNOW
             </div>
 
-            {/* ENQUIRE NOW Button (desktop) */}
-            <button
-              className="
-                font-inter
-                mt-4
-                border border-white
-                rounded-full
-                px-8 py-3
-                text-[15px] font-semibold
-                text-white
-                hover:bg-white hover:text-black
-                transition
-              "
-            >
+            {/* Button - with minimum margin below */}
+            <button className="border border-white rounded-full px-8 py-3 text-sm font-semibold text-white mb-[15vh] hover:bg-white hover:text-black transition" onClick={() => setIsEnquireNowOpen(true)}>
               ENQUIRE NOW
             </button>
           </div>
 
-          {/* Icon Strip (desktop) – now absolute at bottom-80px */}
-          <div className="absolute bottom-[80px] left-0 right-0 bg-transparent">
-            <div className="max-w-[1200px] mx-auto flex justify-center items-center space-x-6">
-              {[
-                "/assets/icons/facebook.png",
-                "/assets/icons/instagram.png",
-                "/assets/icons/linkedin.png",
-                "/assets/icons/twitter.png",
-                "/assets/icons/youtube.png",
-              ].map((icon, i) => (
-                <div
-                  key={i}
-                  className="w-12 h-12 flex items-center justify-center"
-                >
-                  <Image
-                    src={icon}
-                    width={35}
-                    height={35}
-                    alt=""
-                    className="object-contain cursor-pointer"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom Bar (desktop footer) – now absolute at bottom-0 */}
-          <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0]">
-            <div className="max-w-[1200px] mx-auto flex items-center justify-between text-white text-[14px] h-16 px-8">
-              <div>© RATTHA REALTY 2025 | ALL RIGHTS RESERVED</div>
-              <div className="flex items-center space-x-6">
-                <div className="cursor-pointer">
-                  PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
-                </div> 
+          {/* Social Icons - Positioned with viewport units */}
+          <div className="absolute bottom-[10vh] left-0 right-0 flex justify-center gap-6">
+            {['facebook', 'instagram', 'linkedin', 'twitter', 'youtube'].map((icon) => (
+              <div key={icon} className="w-10 h-10">
+                <Image
+                  src={`/assets/icons/${icon}.png`}
+                  width={35}
+                  height={35}
+                  alt=""
+                  className="object-contain cursor-pointer" 
+                />
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer - Fixed at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0] h-14 flex items-center px-8 text-white text-sm">
+          <div className="w-full max-w-screen-xl mx-auto flex justify-between">
+            <div>© RATTHA REALTY 2025 | ALL RIGHTS RESERVED</div>
+            <div className="hover:underline cursor-pointer">
+              PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
             </div>
           </div>
         </div>
       </div>
+      <EnquireNowModal
+        isOpen={isEnquireNowOpen}
+        onClose={() => setIsEnquireNowOpen(false)}
+      />
+
     </div>
   );
 };

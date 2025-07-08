@@ -3,7 +3,7 @@
 import { mailIcon, phoneIconPress } from "@/constants/assets";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import './PressKitContent.css'
+import "./PressKitContent.css";
 
 interface LogoItem {
   id: string;
@@ -37,7 +37,9 @@ interface MediaContact {
 }
 
 const PressKit: React.FC = () => {
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(
+    new Set()
+  );
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
   // Sample data - replace with your actual data
@@ -46,14 +48,14 @@ const PressKit: React.FC = () => {
       id: "logo-1",
       title: "Rattha Logo Black",
       image: "/assets/images/ratthaLogo.jpg",
-      downloadUrl: "/downloads/rattha-logo-black.zip"
+      downloadUrl: "/downloads/rattha-logo-black.zip",
     },
     {
       id: "logo-2",
       title: "Rattha Logo White",
       image: "/assets/images/ratthaLogo.jpg",
-      downloadUrl: "/downloads/rattha-logo-white.zip"
-    }
+      downloadUrl: "/downloads/rattha-logo-white.zip",
+    },
   ];
 
   const profileItems: ProfileItem[] = [
@@ -62,22 +64,22 @@ const PressKit: React.FC = () => {
       title: "RATTHA & SUSTAINABILITY",
       subtitle: "Rattha Realty",
       image: "/assets/images/pressKitProfile1.jpg",
-      downloadUrl: "/downloads/rattha-sustainability.pdf"
+      downloadUrl: "/downloads/rattha-sustainability.pdf",
     },
     {
       id: "profile-2",
       title: "CSR PROFILE",
       subtitle: "Rattha Realty",
       image: "/assets/images/pressKitProfile2.jpg",
-      downloadUrl: "/downloads/csr-profile.pdf"
+      downloadUrl: "/downloads/csr-profile.pdf",
     },
     {
       id: "profile-3",
       title: "CORPORATE PROFILE",
       subtitle: "Rattha Realty",
       image: "/assets/images/pressKitProfile3.jpg",
-      downloadUrl: "/downloads/corporate-profile.pdf"
-    }
+      downloadUrl: "/downloads/corporate-profile.pdf",
+    },
   ];
 
   const photographItems: PhotographItem[] = [
@@ -86,36 +88,36 @@ const PressKit: React.FC = () => {
       name: "GURIBINDER RATTHA",
       position: "Founder",
       image: "/assets/images/pressKitPhotograph1.jpg",
-      downloadUrl: "/downloads/guribinder-founder.jpg"
+      downloadUrl: "/downloads/guribinder-founder.jpg",
     },
     {
       id: "photo-2",
       name: "GURIBINDER RATTHA",
       position: "Chairman",
       image: "/assets/images/pressKitPhotograph2.jpg",
-      downloadUrl: "/downloads/guribinder-chairman.jpg"
+      downloadUrl: "/downloads/guribinder-chairman.jpg",
     },
     {
       id: "photo-3",
       name: "GURIBINDER RATTHA",
       position: "Managing Director",
       image: "/assets/images/pressKitPhotograph3.jpg",
-      downloadUrl: "/downloads/guribinder-md.jpg"
+      downloadUrl: "/downloads/guribinder-md.jpg",
     },
     {
       id: "photo-3",
       name: "GURIBINDER RATTHA",
       position: "Managing Director",
       image: "/assets/images/pressKitPhotograph3.jpg",
-      downloadUrl: "/downloads/guribinder-md.jpg"
+      downloadUrl: "/downloads/guribinder-md.jpg",
     },
     {
       id: "photo-3",
       name: "GURIBINDER RATTHA",
       position: "Managing Director",
       image: "/assets/images/pressKitPhotograph3.jpg",
-      downloadUrl: "/downloads/guribinder-md.jpg"
-    }
+      downloadUrl: "/downloads/guribinder-md.jpg",
+    },
   ];
 
   const mediaContact: MediaContact = {
@@ -126,10 +128,10 @@ const PressKit: React.FC = () => {
       "Regd Office: 6th Floor, Tower C, ",
       "Tek Meadows,",
       "51, Rajiv Gandhi Salai (OMR)",
-      "Sholnganallur, Chennai-600118"
+      "Sholnganallur, Chennai-600118",
     ],
     phone: "+91 9380247254",
-    email: "marketing@rattha.com"
+    email: "marketing@rattha.com",
   };
 
   // Intersection Observer for animations
@@ -138,17 +140,17 @@ const PressKit: React.FC = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const sectionId = entry.target.getAttribute('data-section');
+            const sectionId = entry.target.getAttribute("data-section");
             if (sectionId) {
-              setVisibleSections(prev => new Set([...prev, sectionId]));
+              setVisibleSections((prev) => new Set([...prev, sectionId]));
             }
           }
         });
       },
-      { threshold: 0.2, rootMargin: '50px' }
+      { threshold: 0.2, rootMargin: "50px" }
     );
 
-    Object.values(sectionRefs.current).forEach(ref => {
+    Object.values(sectionRefs.current).forEach((ref) => {
       if (ref) observer.observe(ref);
     });
 
@@ -157,7 +159,7 @@ const PressKit: React.FC = () => {
 
   const handleDownload = (url: string, filename: string) => {
     // Create a temporary anchor element for download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = filename;
     document.body.appendChild(link);
@@ -165,7 +167,15 @@ const PressKit: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  const DownloadButton = ({ url, filename, className = "" }: { url: string; filename: string; className?: string }) => (
+  const DownloadButton = ({
+    url,
+    filename,
+    className = "",
+  }: {
+    url: string;
+    filename: string;
+    className?: string;
+  }) => (
     <button
       onClick={() => handleDownload(url, filename)}
       className={`bg-[#107BC0] text-[#FFFFFF] px-6  py-2 rounded-full text-[12px] font-inter font-[600] uppercase transition-all duration-300 hover:bg-[#0D6BA3] hover:scale-105 hover:shadow-lg ${className}`}
@@ -315,7 +325,7 @@ const PressKit: React.FC = () => {
 
         <div
           className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
-          ref={(el: HTMLDivElement | null) => {
+          ref={(el) => {
             sectionRefs.current["photoScroll"] = el;
           }}
         >

@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowDownToLine } from "lucide-react";
+import PaymentPlanModal from "@/components/PaymentPlanModal";
+
 interface RevealSectionProps {
   title: string;
   description: string;
@@ -18,13 +20,13 @@ const RevealSection: React.FC<RevealSectionProps> = ({
 }) => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // ── capture the current elements once ──
     const titleEl = titleRef.current;
     const descEl = descRef.current;
 
-    if (!titleEl || !descEl) return; // nothing to observe
+    if (!titleEl || !descEl) return;
 
     const observer = new IntersectionObserver(
       (entries, obs) => {
@@ -41,11 +43,10 @@ const RevealSection: React.FC<RevealSectionProps> = ({
 
     [titleEl, descEl].forEach((el) => observer.observe(el));
 
-    // ── cleanup uses the same captured nodes ──
     return () => {
       [titleEl, descEl].forEach((el) => observer.unobserve(el));
     };
-  }, []); // deps stay empty
+  }, []);
 
   return (
     <section className={`py-14 bg-white ${className}`}>
@@ -72,15 +73,15 @@ const RevealSection: React.FC<RevealSectionProps> = ({
             </span>
           </div>
           <div className="flex flex-wrap items-center justify-start md:justify-center gap-[16px] md:gap-[38px] max-w-[300px] md:max-w-full">
-            <Link
-              href={"/"}
+            <button
+              onClick={() => setIsModalOpen(true)}
               className={
                 "font-inter w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#107BC0] px-[10px] py-[10px] md:px-[40px] md:py-[14px] text-[13px] md:text-[15px] font-semibold uppercase tracking-wider text-[#107BC0] transition hover:bg-[#23407C] hover:text-white"
               }
             >
               Payment plan
               <ArrowRight size={20} strokeWidth={2.4} />
-            </Link>
+            </button>
             <Link
               href={"/"}
               className={
@@ -102,6 +103,7 @@ const RevealSection: React.FC<RevealSectionProps> = ({
           </div>
         </div>
       )}
+      <PaymentPlanModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 };
