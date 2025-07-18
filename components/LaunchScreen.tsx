@@ -13,7 +13,7 @@ const LaunchScreen: React.FC = () => {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-  
+
   return (
     <div className="w-full bg-black overflow-x-hidden">
       {/* ─────────── MOBILE LAYOUT (unchanged classes, re-structured) ─────────── */}
@@ -36,16 +36,16 @@ const LaunchScreen: React.FC = () => {
             <source src="/assets/launch.mp4" type="video/mp4" />
           </video> */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full z-10">
-  <Image
-    src="/assets/onePage/desktop_logo.svg"
-    alt="Logo"
-    className="w-60 md:w-[600px] max-w-[90vw] object-contain"
-    width={0}
-    height={0}
-  />
-</div>
+            <Image
+              src="/assets/onePage/desktop_logo.svg"
+              alt="Logo"
+              className="w-80 md:w-[600px] max-w-[110vw] object-contain"
+              width={0}
+              height={0}
+            />
+          </div>
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4 space-y-2 text-center">
-            <div className="text-[12px] font-semibold tracking-wide text-white pt-[30px] pb-[20px] mt-[40vh]">
+            <div className="text-[12px] font-semibold tracking-wide text-white pt-[30px] pb-[20px] mt-[40vh] font-inter">
               BE THE FIRST TO KNOW
             </div>
             <button
@@ -58,6 +58,7 @@ const LaunchScreen: React.FC = () => {
                 text-white
                 hover:bg-white hover:text-black
                 transition
+                font-inter
               "
               onClick={() => setIsEnquireNowOpen(true)}
             >
@@ -65,10 +66,10 @@ const LaunchScreen: React.FC = () => {
             </button>
           </div>
           <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0] text-white text-left text-[12px]">
-            <div className="py-2 px-4 text-[11px]">
+            <div className="py-2 px-4 text-[11px] text-center font-inter">
               © RATTHA REALTY 2025 | ALL RIGHTS RESERVED
             </div>
-            <div className="py-2 px-4 border-t border-white/25 text-[11px]">
+            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter">
               PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
             </div>
             <div className="flex justify-center items-center">
@@ -122,25 +123,31 @@ const LaunchScreen: React.FC = () => {
         />
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full z-10">
-  <Image
-    src="/assets/onePage/desktop_logo.svg"
-    alt="Logo"
-    className="w-60 md:w-[600px] max-w-[90vw] object-contain"
-    width={0}
-    height={0}
-  />
-</div>
+          <Image
+            src="/assets/onePage/desktop_logo.svg"
+            alt="Logo"
+            className="w-100 md:w-[900px] max-w-[160vw] object-contain"
+            width={0}
+            height={0}
+          />
+        </div>
 
         {/* MAIN CONTENT AREA WITH SAFE SPACING */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* This container ensures minimum spacing */}
-          <div className="flex flex-col items-center w-full mx-auto" style={{ minHeight: '60vh' }}>
-            <div className=" font-bold text-[16px] mb-10 text-white mt-[73vh]">
+          <div
+            className="flex flex-col items-center w-full mx-auto"
+            style={{ minHeight: "60vh" }}
+          >
+            <div className=" font-bold text-[16px] mb-10 text-white mt-[73vh] font-inter">
               BE THE FIRST TO KNOW
             </div>
 
             {/* Button - with minimum margin below */}
-            <button className="border border-white rounded-full px-8 py-3 text-[14px] font-bold text-white mb-[15vh] hover:bg-white hover:text-black transition" onClick={() => setIsEnquireNowOpen(true)}>
+            <button
+              className="font-inter border border-white rounded-full px-8 py-3 text-[14px] font-bold text-white mb-[15vh] hover:bg-white hover:text-black transition"
+              onClick={() => setIsEnquireNowOpen(true)}
+            >
               ENQUIRE NOW
             </button>
           </div>
@@ -150,29 +157,34 @@ const LaunchScreen: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0] h-14 flex items-center text-white text-sm">
           {/* Desktop Footer */}
           <div className="hidden md:flex w-full justify-between items-center relative">
-            <div className="text-sm leading-[24px] animate-fade-in ml-[50px]">
+            <div className="text-sm leading-[24px] animate-fade-in ml-[50px] font-inter">
               <span className="font-light text-sm mr-1">&copy;</span>
               RATHA REALTY 2025 &nbsp; | &nbsp; ALL RIGHTS RESERVED
             </div>
             <div className="absolute left-1/2 transform -translate-x-1/2 flex gap-4 animate-scale-in-fade">
-              {['facebook', 'instagram', 'linkedin', 'twitter', 'youtube'].map((icon, i) => (
-                <div
-                  key={i}
-                  className="hover:scale-110 transition-transform duration-200"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  <Image
-                    src={`/assets/icons/${icon}.png`}
-                    width={30}
-                    height={30}
-                    alt={`${icon} icon`}
-                    className="object-contain"
-                  />
-                </div>
-              ))}
+              {["facebook", "instagram", "linkedin", "twitter", "youtube"].map(
+                (icon, i) => (
+                  <div
+                    key={i}
+                    className="hover:scale-110 transition-transform duration-200"
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  >
+                    <Image
+                      src={`/assets/icons/${icon}.png`}
+                      width={30}
+                      height={30}
+                      alt={`${icon} icon`}
+                      className="object-contain"
+                    />
+                  </div>
+                )
+              )}
             </div>
             <div className="text-sm animate-fade-in flex mr-[50px]">
-              <a className="cursor-pointer hover:underline" href="/privacy-policy">
+              <a
+                className="cursor-pointer hover:underline font-inter"
+                href="/privacy-policy"
+              >
                 PRIVACY POLICY&nbsp;
               </a>
               <span className="mx-1">|</span>
@@ -186,7 +198,9 @@ const LaunchScreen: React.FC = () => {
               >
                 <ChevronUp
                   size={16}
-                  className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                  className={`transition-transform duration-200 ${
+                    isExpanded ? "rotate-180" : ""
+                  }`}
                 />
               </button>
             </div>
@@ -197,7 +211,6 @@ const LaunchScreen: React.FC = () => {
         isOpen={isEnquireNowOpen}
         onClose={() => setIsEnquireNowOpen(false)}
       />
-
     </div>
   );
 };
