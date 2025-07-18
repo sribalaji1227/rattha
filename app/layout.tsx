@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AppLayout from "@/components/loader/AppLayout"; 
-import { Cormorant_Garamond, Inter } from "next/font/google";
-import ClientHeaderFooterWrapper from "./ClientHeaderFooterWrapper";
-import FloatingActionMenu from "@/components/floating-menu/FloatingActionMenu";
+import { Cormorant_Garamond, Inter } from "next/font/google"; 
 
 export const metadata: Metadata = {
   title: "Rattha",

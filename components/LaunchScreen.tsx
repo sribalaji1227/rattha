@@ -13,12 +13,7 @@ const LaunchScreen: React.FC = () => {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-  const scrollToTop = useCallback(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, []);
-
+  
   return (
     <div className="w-full bg-black overflow-x-hidden">
       {/* ─────────── MOBILE LAYOUT (unchanged classes, re-structured) ─────────── */}

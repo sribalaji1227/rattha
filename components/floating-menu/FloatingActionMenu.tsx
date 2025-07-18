@@ -19,11 +19,11 @@ interface ActionButton {
   onClick: () => void;
 }
 
-const FloatingActionMenu: React.FC = () => {
+const FloatingActionMenu: React.FC = () => { 
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isHiddenOnRoutes = ["/", "/launch"];
   if (isHiddenOnRoutes.includes(pathname)) return null;
-  const [isOpen, setIsOpen] = useState(false);
 
   const actionButtons: ActionButton[] = [
     {

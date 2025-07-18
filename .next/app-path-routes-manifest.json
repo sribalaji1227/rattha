@@ -1,0 +1,21 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/favicon.ico/route": "/favicon.ico",
+  "/about-us/page": "/about-us",
+  "/career/page": "/career",
+  "/contact-us/page": "/contact-us",
+  "/home/page": "/home",
+  "/login/page": "/login",
+  "/cookie-policy/page": "/cookie-policy",
+  "/media-center/page": "/media-center",
+  "/nri/page": "/nri",
+  "/page": "/",
+  "/partners/channel/page": "/partners/channel",
+  "/partners/jv/page": "/partners/jv",
+  "/partners/page": "/partners",
+  "/privacy-policy/page": "/privacy-policy",
+  "/partners/referral/page": "/partners/referral",
+  "/properties/page": "/properties",
+  "/properties/[slug]/page": "/properties/[slug]",
+  "/terms-of-use/page": "/terms-of-use"
+}
