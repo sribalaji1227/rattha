@@ -1,7 +1,7 @@
 // components/LaunchScreen.tsx
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import EnquireNowModal from "./Common/EnquireNowModal";
 import { ChevronUp } from "lucide-react";
@@ -13,6 +13,21 @@ const LaunchScreen: React.FC = () => {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+const socialLinks = [
+  { icon: "/assets/icons/facebook.png", url: "https://www.facebook.com/" },
+  {
+    icon: "/assets/icons/instagram.png",
+    url: "https://www.instagram.com/rattharealty/",
+  },
+  {
+    icon: "/assets/icons/linkedin.png",
+    url: "https://www.linkedin.com/company/rattha-realty/?viewAsMember=true",
+  },
+  { icon: "/assets/icons/twitter.png", url: "https://x.com/Rattharealty" },
+  { icon: "/assets/icons/youtube.png", url: "https://www.youtube.com/" },
+];
+
 
   return (
     <div className="w-full bg-black overflow-x-hidden">
@@ -73,30 +88,27 @@ const LaunchScreen: React.FC = () => {
               PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
             </div>
             <div className="flex justify-center items-center">
-              {[
-                "/assets/icons/facebook.png",
-                "/assets/icons/instagram.png",
-                "/assets/icons/linkedin.png",
-                "/assets/icons/twitter.png",
-                "/assets/icons/youtube.png",
-              ].map((icon, i) => (
-                <button
+              {socialLinks.map((item, i) => (
+                <a
                   key={i}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="
-                    w-10 h-10
-                    rounded-full 
-                    flex items-center justify-center
-                    transition 
-                  "
+        w-10 h-10
+        rounded-full 
+        flex items-center justify-center
+        transition
+      "
                 >
                   <Image
-                    src={icon}
-                    width={20}
-                    height={20}
-                    alt=""
+                    src={item.icon}
+                    width={25}
+                    height={25}
+                    alt={`${item.url.split("/")[2]} icon`}
                     className="object-contain"
                   />
-                </button>
+                </a>
               ))}
             </div>
           </div>
@@ -162,23 +174,24 @@ const LaunchScreen: React.FC = () => {
               RATHA REALTY 2025 &nbsp; | &nbsp; ALL RIGHTS RESERVED
             </div>
             <div className="absolute left-1/2 transform -translate-x-1/2 flex gap-4 animate-scale-in-fade">
-              {["facebook", "instagram", "linkedin", "twitter", "youtube"].map(
-                (icon, i) => (
-                  <div
-                    key={i}
-                    className="hover:scale-110 transition-transform duration-200"
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  >
-                    <Image
-                      src={`/assets/icons/${icon}.png`}
-                      width={30}
-                      height={30}
-                      alt={`${icon} icon`}
-                      className="object-contain"
-                    />
-                  </div>
-                )
-              )}
+              {socialLinks.map((item, i) => (
+                <a
+                  key={i}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:scale-110 transition-transform duration-200"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  <Image
+                    src={item.icon}
+                    width={30}
+                    height={30}
+                    alt={`${item.url.split("/")[2]} icon`}
+                    className="object-contain"
+                  />
+                </a>
+              ))}
             </div>
             <div className="text-sm animate-fade-in flex mr-[50px]">
               <a
