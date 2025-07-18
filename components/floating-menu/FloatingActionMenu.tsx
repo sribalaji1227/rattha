@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
   enguireIcon,
   phoneIcon,
@@ -19,6 +20,9 @@ interface ActionButton {
 }
 
 const FloatingActionMenu: React.FC = () => {
+  const pathname = usePathname();
+  const isHiddenOnRoutes = ["/", "/launch"];
+  if (isHiddenOnRoutes.includes(pathname)) return null;
   const [isOpen, setIsOpen] = useState(false);
 
   const actionButtons: ActionButton[] = [
@@ -105,10 +109,10 @@ const FloatingActionMenu: React.FC = () => {
       <button
         onClick={toggleMenu}
         className={`
-          w-[70px] h-[70px] rounded-full shadow-lg
+          w-[54px] h-[54px] rounded-full shadow-lg
           flex items-center justify-center
           transition-all duration-300 ease-out transform
-          hover:shadow-xl hover:scale-105
+          hover:shadow-xl hover:scale-105 ml-[10px]
           ${isOpen 
             ? 'bg-[#B5B5B5]  rotate-45' 
             : 'bg-[#FFFFFF]'
@@ -119,15 +123,15 @@ const FloatingActionMenu: React.FC = () => {
         {isOpen ? (
            <Image
               src={menuPlusIcon}
-              width={38}
-              height={38}
+              width={20}
+              height={20}
               alt={"Cancel"}
               className="object-contain"
             />        ) : (
           <Image
               src={menuPlusIcon}
-              width={38}
-              height={38}
+              width={20}
+              height={20}
               alt={"Plus"}
               className="object-contain"
             />

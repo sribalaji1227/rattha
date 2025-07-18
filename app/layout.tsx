@@ -40,10 +40,9 @@ export default function RootLayout({
         className={`${cormorantGaramond.variable} ${inter.variable} antialiased`}
       >
         <AppLayout> 
-          <ClientHeaderFooterWrapper>
+          
             {children}
-             <FloatingActionMenu />
-          </ClientHeaderFooterWrapper>
+             
         </AppLayout>
       </body>
     </html>

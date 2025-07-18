@@ -58,7 +58,7 @@ export default function NewsCarousel() {
           1280: { slidesPerView: 1.5, spaceBetween: 40 },
         }}
       >
-        {slides.map(({ id, image, text }: Slide) => (
+        {slides.map(({ id, image, title, text }: Slide) => (
           <SwiperSlide key={id}>
             <div
               className="

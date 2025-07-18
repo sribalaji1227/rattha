@@ -51,21 +51,13 @@ import hospitallty from '@/public/assets/images/hospitality.png';
 import officeSpace from '@/public/assets/images/office_space.png';
 import residentialDevelopement from '@/public/assets/images/residential_developement.png';
 import textileGarment from '@/public/assets/images/textile_garment.png';
-import partnerMobileBanner from  '@/public/assets/images/partnerHeroBannerMobile.png';
+import partnerMobileBanner from '@/public/assets/images/partnerHeroBannerMobile.png';
 import mailIcon from '@/public/assets/icons/kitMailIcon.svg';
 import phoneIconPress from '@/public/assets/icons/kitPhoneIcon.svg';
 import PressFileIcon from '@/public/assets/icons/pressFileIcon.svg';
 import PressCalendarIcon from '@/public/assets/icons/calendar.svg';
 import menuPlusIcon from '@/public/assets/icons/MenuPlusIcon.svg';
 import menuCancelIcon from '@/public/assets/icons/MenuCancelIcon.svg';
-
-
-
-
-
-
- 
-
 
 export {
     logo,
@@ -114,7 +106,7 @@ export {
     sales_enquiry,
     channel_partner_enquiry,
     emptyStarIcon,
-    halfStarIcon, 
+    halfStarIcon,
     tickIcon,
     partnerMobileBanner,
     mailIcon,

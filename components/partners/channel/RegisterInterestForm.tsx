@@ -4,75 +4,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { contactUs } from "@/actions/apiAct";
+import { FormField, FormValues, RegisterInterestFormProps, VerificationState } from "@/types/partnersChannel";
 
-// ─────────────────────────────────────────
-// Type definitions
-// ─────────────────────────────────────────
-interface Country {
-  name: string;
-  code: string;
-  flag: string;
-}
-
-interface FormField {
-  name: string;
-  type: "text" | "email" | "tel" | "textarea";
-  label: string;
-  placeholder: string;
-  required: boolean;
-  validation?: Yup.AnySchema; // <- no more `any`
-}
-
-interface FormSection {
-  title?: string;
-  fields: FormField[];
-  isClient?: boolean;
-}
-
-interface RegisterInterestFormProps {
-  title: string;
-  titleLines?: string[];
-  sections: FormSection[];
-  submitButtonText?: string;
-  successMessage?: {
-    title: string;
-    description: string;
-    buttonText: string;
-  };
-  privacyPolicyText?: {
-    part1: string;
-    linkText: string;
-    part2: string;
-  };
-  checkboxLabel?: string;
-  className?: string;
-  projectName?: string;
-  formType?: 'default' | 'referral';
-}
-
-// Dynamic form values shape
-type FormValues = Record<string, string | boolean>;
-
-// ─────────────────────────────────────────
-// Country list
-// ─────────────────────────────────────────
-const countries: Country[] = [
-  { name: "India", code: "+91", flag: "🇮🇳" },
-  { name: "Singapore", code: "+65", flag: "🇸🇬" },
-  { name: "United Arab Emirates", code: "+971", flag: "🇦🇪" },
-  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
-  { name: "United States", code: "+1", flag: "🇺🇸" },
-  { name: "Australia", code: "+61", flag: "🇦🇺" },
-  { name: "Canada", code: "+1", flag: "🇨🇦" },
-  { name: "China", code: "+86", flag: "🇨🇳" },
-  { name: "France", code: "+33", flag: "🇫🇷" },
-  { name: "Germany", code: "+49", flag: "🇩🇪" },
-  { name: "Japan", code: "+81", flag: "🇯🇵" },
-  { name: "Malaysia", code: "+60", flag: "🇲🇾" },
-  { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
-  { name: "South Korea", code: "+82", flag: "🇰🇷" },
-  { name: "Thailand", code: "+66", flag: "🇹🇭" },
-];
 
 const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
   title,
@@ -92,24 +29,45 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
   checkboxLabel = "Keep Me Updated On News And Offers",
   className = "",
   projectName,
-  formType
+  formType,
+  onClose
 }) => {
   // ───────────────────────────
   // Local state
   // ───────────────────────────
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [countryDropdowns, setCountryDropdowns] = useState<
-    Record<string, boolean>
-  >({});
-  const [selectedCountries, setSelectedCountries] = useState<
-    Record<string, Country>
-  >({});
-  const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+  const [phoneValues, setPhoneValues] = useState<Record<string, string>>({});
   const [isVisible, setIsVisible] = useState(false);
 
-  const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // Field-specific verification states (for both email and phone)
+  const [verificationStates, setVerificationStates] = useState<Record<string, VerificationState>>({});
+  const [sendingVerifications, setSendingVerifications] = useState<Record<string, boolean>>({});
+
+
   const sectionRef = useRef<HTMLElement>(null);
+
+  // ───────────────────────────
+  // Verification helpers
+  // ───────────────────────────
+  const getVerificationState = (fieldName: string): VerificationState => {
+    return verificationStates[fieldName] || {
+      verified: false,
+      sent: false,
+      otp: ["", "", "", ""],
+      otpError: false,
+      timer: 60,
+      otpVerified: false,
+      canResend: false,
+    };
+  };
+
+  const updateVerificationState = (fieldName: string, updates: Partial<VerificationState>) => {
+    setVerificationStates(prev => ({
+      ...prev,
+      [fieldName]: { ...getVerificationState(fieldName), ...updates }
+    }));
+  };
 
   // ───────────────────────────
   // Helpers
@@ -124,10 +82,9 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
           schemaFields[field.name] = field.validation;
         } else if (field.required) {
           let validation: Yup.StringSchema = Yup.string()
-            .trim()
             .required(`${field.label} is required`)
             .test(
-              'not-only-spaces',
+              "not-only-spaces",
               `${field.label} cannot be just spaces`,
               (value) => !!value && value.trim().length > 0
             );
@@ -135,7 +92,13 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
           // Specific rule for "name"
           if (field.name === "fullName") {
             validation = validation
-              .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
+              .matches(
+                /^[A-Za-z]+(?: [A-Za-z]+)*$/,
+                "Name can only contain letters and a single space between words"
+              )
+              .test('no-multiple-spaces', 'Name cannot start/end with spaces or contain multiple spaces', value =>
+                !!value && value.trim() === value && !/\s{2,}/.test(value)
+              )
               .min(2, "Name must be at least 2 characters")
               .max(50, "Name must be at most 50 characters");
           }
@@ -144,16 +107,37 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
           if (field.type === "email") {
             validation = validation
               .matches(
-                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                /^(?!\s)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?!\s)$/,
                 "Invalid email address"
               )
+              .test(
+                "no-whitespace",
+                "Email must not contain any spaces",
+                (value) => !/\s/.test(value || "")
+              )
               .email("Invalid email address");
-          }
-          else if (field.type === "tel") {
-            validation = validation.matches(
-              /^[0-9]{10}$/,
-              "Phone number must be exactly 10 digits"
-            );
+          } else if (field.type === "tel") {
+            validation = validation
+              .min(10, "Phone number must be at least 10 digits")
+              .test(
+                "valid-phone",
+                "Please enter a valid phone number",
+                (value) => {
+                  if (!value) return false;
+                  // Remove all non-numeric characters
+                  const numericValue = value.replace(/\D/g, "");
+                  return numericValue.length >= 10;
+                }
+              );
+          } else if (field.name === "message") {
+            validation = validation
+              .min(5, "Message must be at least 5 characters")
+              .test(
+                "min-characters",
+                "Message must contain at least 5 non-space characters",
+                (value) =>
+                  value ? value.replace(/\s/g, "").length >= 5 : false
+              );
           }
 
           schemaFields[field.name] = validation;
@@ -164,7 +148,6 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
     schemaFields.subscribe = Yup.boolean();
     return Yup.object().shape(schemaFields);
   };
-
 
   const createInitialValues = () => {
     const values: FormValues = {};
@@ -177,118 +160,283 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
     return values;
   };
 
-  // ───────────────────────────
-  // Formik
-  // ───────────────────────────
-  // const formik = useFormik<FormValues>({
-  //   initialValues: createInitialValues(),
-  //   validationSchema: createValidationSchema(),
-  //   onSubmit: async (values) => {
-  //     setIsSubmitting(true);
-  //     try {
-  //       const submissionData: FormValues = { ...values };
-
-  //       // prepend dialing code to phone fields
-  //       Object.keys(selectedCountries).forEach((fieldName) => {
-  //         if (values[fieldName]) {
-  //           submissionData[
-  //             fieldName
-  //           ] = `${selectedCountries[fieldName].code}${values[fieldName]}`;
-  //         }
-  //       });
-
-  //       await new Promise((res) => setTimeout(res, 1000));
-  //       console.log("Form values:", submissionData);
-  //       setFormSubmitted(true);
-  //       formik.resetForm({
-  //         values: createInitialValues(),
-  //       });
-  //     } catch (error) {
-  //       console.error("Error submitting form:", error);
-  //     } finally {
-  //       setIsSubmitting(false);
-  //     }
-  //   },
-  // });
   const formik = useFormik<FormValues>({
     initialValues: createInitialValues(),
     validationSchema: createValidationSchema(),
     onSubmit: async (values) => {
+      console.log(formik.values);
+      const fieldsToVerify = ["email", "phone"];
+      if (formType === "referral" || formType === "channel") {
+        fieldsToVerify.push("clientEmail", "clientPhone");
+      }
+
+      const unverifiedFields = fieldsToVerify.filter(
+        (field) => !getVerificationState(field).otpVerified
+      );
+
+      if (unverifiedFields.length > 0) {
+        toast.error("Please verify all required fields (email and phone) before submitting.");
+        return;
+      }
+
       setIsSubmitting(true);
-      try {
-        let submissionData: any;
-
-        if (formType === 'referral') {
-          // Referral partners form payload
-          submissionData = {
-            name: values.fullName as string,
-            email: values.email as string,
-            phone: `${selectedCountries['phone']?.code || ''}${values.phone}`,
-            message: values.message as string || '',
-            updateOnNews: values.subscribe as boolean,
-            type: 'referral',
-            projectName: projectName,
+      const submissionData =
+        formType === "referral"
+          ? {
+            name: values.fullName,
+            email: values.email,
+            phone: phoneValues.phone || values.phone,
+            message: values.message || "",
+            updateOnNews: values.subscribe,
+            type: "referral",
+            projectName,
             referredPerson: {
-              name: values.clientFullName as string,
-              email: values.clientEmail as string,
-              phone: `${selectedCountries['clientPhone']?.code || ''}${values.clientPhone}`
+              name: values.clientFullName,
+              email: values.clientEmail,
+              phone: phoneValues.clientPhone || values.clientPhone,
+            },
+          }
+          : formType === "channel"
+            ? {
+              type: "client",
+              name: values.fullName,
+              email: values.email,
+              phone: phoneValues.phone || values.phone,
+              message: values.message || "",
+              updateOnNews: values.subscribe,
+              projectName,
+              referredPerson: {
+                name: values.clientFullName,
+                email: values.clientEmail,
+                phone: phoneValues.clientPhone || values.clientPhone,
+              }
             }
-          };
-        } else {
-          // Default form payload
-          submissionData = {
-            name: values.fullName as string,
-            email: values.email as string,
-            phone: `${selectedCountries['phone']?.code || ''}${values.phone}`,
-            message: values.message as string || '',
-            updateOnNews: values.subscribe as boolean,
-            projectName: projectName
-          };
-        }
+            : {
+              name: values.fullName,
+              email: values.email,
+              phone: phoneValues.phone || values.phone,
+              message: values.message || "",
+              updateOnNews: values.subscribe,
+              projectName,
+            };
 
-        // Make API call
-        const response = await fetch("http://doodlebluelive.com:2057/api/inquiries/add", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(submissionData),
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const responseData = await response.json();
-        console.log('API Response:', responseData);
-
+      try {
+        await contactUs(submissionData);
         setFormSubmitted(true);
-        formik.resetForm({
-          values: createInitialValues(),
-        });
-      } catch (error) {
-        console.error('Error submitting form:', error);
+        formik.resetForm({ values: createInitialValues() });
+        setPhoneValues({});
+        setVerificationStates({}); // Reset all verification states
+      } catch (error: any) {
+        console.error("Submission failed:", error);
+        let errorMessage = 'Failed to submit form. Please try again.';
+
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        }
+        toast.error(errorMessage)
       } finally {
         setIsSubmitting(false);
       }
     },
   });
 
-  // ───────────────────────────
-  // Side effects
-  // ───────────────────────────
-  // initialise default country for each phone input
+  // Timer effect for each verification field
   useEffect(() => {
-    const phoneFields: Record<string, Country> = {};
-    sections.forEach((section) => {
-      section.fields.forEach((field) => {
-        if (field.type === "tel") phoneFields[field.name] = countries[0];
-      });
-    });
-    setSelectedCountries(phoneFields);
-  }, [sections]);
+    const interval = setInterval(() => {
+      setVerificationStates(prev => {
+        const updated: typeof prev = {};
 
-  // intersection observer for animation
+        Object.entries(prev).forEach(([field, state]) => {
+          if (state.verified && !state.otpVerified && state.timer > 0) {
+            const newTimer = state.timer - 1;
+
+            updated[field] = {
+              ...state,
+              timer: newTimer,
+              canResend: newTimer <= 0,
+            };
+          } else {
+            updated[field] = state;
+          }
+        });
+
+        return updated;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleOtpChange = (
+    value: string,
+    index: number,
+    fieldName: string
+  ) => {
+    if (!/^[0-9]?$/.test(value)) return; // Only digit or empty
+
+    const currentState = getVerificationState(fieldName);
+    const newOtp = [...currentState.otp];
+    newOtp[index] = value;
+    updateVerificationState(fieldName, { otp: newOtp });
+
+    // Move focus to next input if value is typed
+    if (value && index < 3) {
+      const nextInput = document.getElementById(`otp-${fieldName}-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+
+
+  const handleOtpKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+    fieldName: string
+  ) => {
+    const currentState = getVerificationState(fieldName);
+    const currentVal = currentState.otp[index];
+
+    if (e.key === "Backspace") {
+      if (currentVal) {
+        // Just clear the current value
+        const newOtp = [...currentState.otp];
+        newOtp[index] = "";
+        updateVerificationState(fieldName, { otp: newOtp });
+      } else if (index > 0) {
+        // Move focus back and clear previous box
+        const prevInput = document.getElementById(`otp-${fieldName}-${index - 1}`);
+        prevInput?.focus();
+
+        const newOtp = [...currentState.otp];
+        newOtp[index - 1] = "";
+        updateVerificationState(fieldName, { otp: newOtp });
+      }
+    }
+  };
+
+
+  const handleVerifyOtp = async (fieldName: string) => {
+    const currentState = getVerificationState(fieldName);
+    const otp = currentState.otp.join("");
+    if (!otp || otp.length < 4) {
+      updateVerificationState(fieldName, { otpError: true });
+      return;
+    }
+
+    const isPhone = fieldName === "phone" || fieldName === "clientPhone";
+    const isClient = fieldName === "clientPhone" || fieldName === "clientEmail";
+
+    const email = isClient ? formik.values["clientEmail"] : formik.values["email"];
+    const phoneRaw = isClient ? formik.values["clientPhone"] : formik.values["phone"];
+    const formattedPhone = `+${phoneRaw}`;
+
+    const endpoint = isPhone
+      ? "http://doodlebluelive.com:2057/api/enquire/verify-phone-otp"
+      : "http://doodlebluelive.com:2057/api/enquire/verify-email-otp";
+
+    const payload = isPhone
+      ? { phone: formattedPhone, otp, email }
+      : { email, otp };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        updateVerificationState(fieldName, {
+          otpVerified: true,
+          otpError: false,
+          sent: false,
+        });
+      } else {
+        console.error("OTP verification failed:", data?.message || "Unknown error");
+        updateVerificationState(fieldName, { otpError: true });
+        toast.error(data?.message || "Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      updateVerificationState(fieldName, { otpError: true });
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
+
+
+  const handleSendVerification = async (fieldName: string) => {
+    const value = formik.values[fieldName];
+    if (!value) return;
+
+    setSendingVerifications(prev => ({ ...prev, [fieldName]: true }));
+    const isPhone = fieldName === "phone" || fieldName === "clientPhone";
+    const isClient = fieldName === "clientPhone" || fieldName === "clientEmail";
+
+    const email = isClient ? formik.values["clientEmail"] : formik.values["email"];
+    const phoneRaw = isClient ? formik.values["clientPhone"] : formik.values["phone"];
+    const formattedPhone = `+${phoneRaw}`;
+
+    const emailKey = isClient ? "clientEmail" : "email";
+    if (isPhone && !getVerificationState(emailKey)?.otpVerified) {
+      toast.error("Please verify email before phone.");
+      setSendingVerifications(prev => ({ ...prev, [fieldName]: false }));
+      return;
+    }
+
+    const endpoint = isPhone
+      ? "http://doodlebluelive.com:2057/api/enquire/send-phone-otp"
+      : "http://doodlebluelive.com:2057/api/enquire/send-email-otp";
+
+    const payload = isPhone
+      ? { phone: formattedPhone, email }
+      : { email: value };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        updateVerificationState(fieldName, {
+          sent: true,
+          verified: true,
+          timer: 60,
+          canResend: false,
+          otp: ["", "", "", ""],
+          otpError: false,
+        });
+      } else {
+        console.error("Failed to send OTP:", data?.message || "Unknown error");
+        toast.error(data?.message || "Failed to send OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setSendingVerifications(prev => ({ ...prev, [fieldName]: false }));
+    }
+  };
+
+  const handleResendOtp = async (fieldName: string) => {
+    updateVerificationState(fieldName, {
+      otp: ["", "", "", ""],
+      canResend: false,
+      otpError: false,
+      verified: true, // Ensure verified is true to trigger the timer again
+    });
+
+    await handleSendVerification(fieldName);
+  };
+
+
   useEffect(() => {
     const current = sectionRef.current;
     if (!current) return;
@@ -309,165 +457,9 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
     return () => observer.unobserve(current);
   }, []);
 
-  // close country dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      Object.keys(dropdownRefs.current).forEach((key) => {
-        const dropdown = dropdownRefs.current[key];
-        if (dropdown && !dropdown.contains(event.target as Node)) {
-          setCountryDropdowns((prev) => ({ ...prev, [key]: false }));
-        }
-      });
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   // ───────────────────────────
   // Render helpers
   // ───────────────────────────
-  const renderCountryDropdown = (fieldName: string) => {
-    const filteredCountries = countries.filter(
-      (c) =>
-        c.name
-          .toLowerCase()
-          .includes((searchTerms[fieldName] || "").toLowerCase()) ||
-        c.code.includes(searchTerms[fieldName] || "")
-    );
-
-    return (
-
-      <div
-        className="relative flex"
-        style={{ zIndex: countryDropdowns[fieldName] ? 9999 : 'auto' }}
-        ref={(ref: HTMLDivElement | null) => {
-          dropdownRefs.current[fieldName] = ref;
-        }}
-      >
-        {/* Button */}
-        <button
-          type="button"
-          onClick={() =>
-            setCountryDropdowns((prev) => {
-              const next: Record<string, boolean> = {};
-              Object.keys(prev).forEach((k) => (next[k] = false));
-              next[fieldName] = !prev[fieldName];
-              return next;
-            })
-          }
-          className="flex items-center relative gap-2 px-3 py-3 border border-[#828282] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 hover:bg-gray-50"
-        >
-          <span className="text-lg">{selectedCountries[fieldName]?.flag}</span>
-          <span className="text-gray-700">
-            {selectedCountries[fieldName]?.code}
-          </span>
-          <svg
-            className="h-4 w-4 text-gray-400 ml-1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-
-        {/* Phone input */}
-        <input
-          type="tel"
-          id={fieldName}
-          name={fieldName}
-          placeholder={
-            sections.flatMap((s) => s.fields).find((f) => f.name === fieldName)
-              ?.placeholder
-          }
-          className={`flex-1 px-3 py-3 border-t border-r border-b ${formik.touched[fieldName] && formik.errors[fieldName]
-            ? "border-red-500"
-            : "border-[#828282]"
-            } focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder-[#BDBDBD]`}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values[fieldName] as string}
-        />
-
-
-        {/* Dropdown - moved outside and positioned absolutely to the container */}
-        {countryDropdowns[fieldName] && (
-          <div
-            className="absolute top-full left-0 mt-1 w-[300px] bg-white border border-[#E0E0E0] shadow-2xl max-h-60 overflow-hidden"
-            style={{ zIndex: 99999 }}
-          >
-            <div className="p-2 border-b border-gray-200">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                value={searchTerms[fieldName] || ""}
-                onChange={(e) =>
-                  setSearchTerms({
-                    ...searchTerms,
-                    [fieldName]: e.target.value,
-                  })
-                }
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-            <div className="max-h-48 overflow-y-auto">
-              {filteredCountries.map((country) => (
-                <button
-                  key={country.code}
-                  type="button"
-                  onClick={() => {
-                    setSelectedCountries((prev) => ({
-                      ...prev,
-                      [fieldName]: country,
-                    }));
-                    setCountryDropdowns((prev) => ({
-                      ...prev,
-                      [fieldName]: false,
-                    }));
-                    setSearchTerms((prev) => ({ ...prev, [fieldName]: "" }));
-                  }}
-                  className={`w-full px-3 py-2.5 text-left hover:bg-gray-100 flex items-center gap-3 ${selectedCountries[fieldName]?.code === country.code
-                    ? "bg-blue-50"
-                    : ""
-                    }`}
-                >
-                  <span className="text-lg">{country.flag}</span>
-                  <span className="flex-1 text-gray-800">{country.name}</span>
-                  <span className="text-gray-600">{country.code}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Phone input
-        <input
-          type="tel"
-          id={fieldName}
-          name={fieldName}
-          placeholder={
-            sections.flatMap((s) => s.fields).find((f) => f.name === fieldName)
-              ?.placeholder
-          }
-          className={`flex-1 relative z-0 px-3 py-3 border-t border-r border-b ${formik.touched[fieldName] && formik.errors[fieldName]
-            ? "border-red-500"
-            : "border-[#828282]"
-            } focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder-[#BDBDBD]`}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values[fieldName] as string}
-        /> */}
-      </div>
-    );
-  };
-
-  // And update the renderField function:
   const renderField = (field: FormField, index: number) => {
     const delay = `${index * 100}ms`;
     const baseClass =
@@ -475,14 +467,13 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
       (isVisible ? " animate-slide-up" : " opacity-0");
 
     if (field.type === "tel") {
+      const phoneState = getVerificationState(field.name);
+
       return (
         <div
           key={field.name}
           className={`${baseClass} relative overflow-visible`}
-          style={{
-            animationDelay: delay,
-            zIndex: countryDropdowns[field.name] ? 9999 : 'auto'
-          }}
+          style={{ animationDelay: delay, zIndex: 9999 }}
         >
           <label
             htmlFor={field.name}
@@ -491,7 +482,159 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
             {field.label}{" "}
             {field.required && <span className="text-[#6E6E6E]">*</span>}
           </label>
-          {renderCountryDropdown(field.name)}
+          <div className={`relative flex items-center h-[48px] border ${formik.touched[field.name] && formik.errors[field.name]
+            ? "border-t-[#ef4444] border-r-[#ef4444] border-b-[#ef4444]"
+            : "border-[#828282]"}`} style={{ zIndex: 9999 }}>
+            <div className="flex-grow">
+              <PhoneInput
+                enableSearch
+                country={"in"}
+                value={phoneValues[field.name] || ""}
+                onChange={(value) => {
+                  setPhoneValues((prev) => ({ ...prev, [field.name]: value }));
+                  formik.setFieldValue(field.name, value);
+                  updateVerificationState(field.name, { verified: false, sent: false }); // reset status
+                }}
+                onBlur={() => formik.setFieldTouched(field.name, true)}
+                placeholder={field.placeholder}
+                disabled={phoneState.otpVerified}
+                containerStyle={{
+                  width: "100%",
+                  position: "relative",
+                  zIndex: 9999,
+                }} inputStyle={{
+                  width: "100%",
+                  height: "48px",
+                  fontSize: "14px",
+                  borderTop:
+                    formik.touched[field.name] && formik.errors[field.name]
+                      ? "1px solid #ef4444"
+                      : "1px solid #828282",
+                  borderRadius: "0",
+                  paddingLeft: "48px",
+                  borderBottom:
+                    formik.touched[field.name] && formik.errors[field.name]
+                      ? "1px solid #ef4444"
+                      : "1px solid #828282",
+                  borderRight: 'none',
+                  borderLeft: 'transparent',
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                buttonStyle={{
+                  border:
+                    formik.touched[field.name] && formik.errors[field.name]
+                      ? "1px solid #ef4444"
+                      : "1px solid #828282",
+                  borderLeft: '0px',
+                  borderRadius: "0",
+                  backgroundColor: "white",
+                  zIndex: 9999,
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                dropdownStyle={{
+                  zIndex: 99999,
+                  position: "absolute",
+                  top: "100%",
+                  left: "0",
+                  right: "0",
+                  backgroundColor: "white",
+                  border: "1px solid #E0E0E0",
+                  boxShadow:
+                    "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                }}
+                searchStyle={{
+                  margin: "0",
+                  width: "100%",
+                  height: "32px",
+                  border: "1px solid #E0E0E0",
+                  borderRadius: "0",
+                }}
+                inputProps={{
+                  name: field.name,
+                  id: field.name,
+                }}
+              />
+            </div>
+            {!phoneState.verified ? (
+              <button
+                type="button"
+                onClick={() => handleSendVerification(field.name)}
+                className="text-blue-600 font-medium text-sm px-4 py-3 cursor-pointer whitespace-nowrap"
+                disabled={!formik.values[field.name] || !!formik.errors[field.name] || sendingVerifications[field.name]}
+              >
+                {sendingVerifications[field.name] ? "Sending..." : "Send Verification"}
+              </button>
+            ) : !phoneState.otpVerified ? (
+              <span className="text-green-600 text-sm px-4 py-3 whitespace-nowrap">
+                {sendingVerifications[field.name] ? "Sending..." : "Sent Verification"}
+              </span>
+            ) : (
+              <span className="px-4 py-3">
+                <img src='/assets/icons/verified.png' width={20} height={20} alt="verified" />
+              </span>
+            )}
+          </div>
+
+          {phoneState.sent && (
+            <div>
+              <div className="mt-4">
+                <label className="block text-[13px] font-medium text-[#6E6E6E] mb-2 font-inter">
+                  Enter OTP for Phone Verification
+                </label>
+
+                <div className="flex items-center gap-4">
+                  {[...Array(4)].map((_, index) => (
+                    <input
+                      key={index}
+                      id={`otp-${field.name}-${index}`}
+                      type="text"
+                      maxLength={1}
+                      className="w-10 h-10 text-center border-b-2  text-[#107BC0] text-[16px] sm:text[24px] border-[#107BC0] outline-none"
+                      value={phoneState.otp[index]}
+                      onChange={(e) => handleOtpChange(e.target.value, index, field.name)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, index, field.name)}
+                    />
+                  ))}
+
+                  {!phoneState.otpVerified ? (
+                    <span className="text-sm text-gray-600 w-[50px]">
+                      {phoneState.timer > 0 ? `00:${String(phoneState.timer).padStart(2, "0")}` : null}
+                    </span>
+                  ) : (
+                    <span className="text-green-600 text-xl"></span>
+                  )}
+
+                  {!phoneState.otpVerified ? (
+                    <button
+                      type="button"
+                      onClick={() => handleVerifyOtp(field.name)}
+                      className="bg-[#107BC0] text-white px-4 py-2 h-[40px] w-[102px] rounded-[20px] hover:bg-[#0D6BA3] text-sm"
+                    >
+                      VERIFY
+                    </button>
+                  ) : null}
+                </div>
+
+                {phoneState.canResend && !phoneState.otpVerified && (
+                  <button
+                    type="button"
+                    onClick={() => handleResendOtp(field.name)}
+                    className="mt-2 text-blue-600  text-sm"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+              {phoneState.otpError && (
+                <p className="text-red-600 text-sm mt-2">Invalid OTP. Please try again.</p>
+              )}
+            </div>
+          )}
+
           {formik.touched[field.name] && formik.errors[field.name] && (
             <p className="mt-1 text-sm text-red-600">
               {formik.errors[field.name] as string}
@@ -505,7 +648,7 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
       return (
         <div
           key={field.name}
-          className={`${baseClass} relative z-0`}
+          className={`${baseClass} relative`}
           style={{ animationDelay: delay }}
         >
           <label
@@ -537,7 +680,125 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
       );
     }
 
-    // text / email
+    if (field.type === "email") {
+      const emailState = getVerificationState(field.name);
+
+      return (
+        <div
+          key={field.name}
+          className={`${baseClass} relative`}
+          style={{ animationDelay: delay }}
+        >
+          <label
+            htmlFor={field.name}
+            className="block text-[13px] font-medium text-[#6E6E6E] mb-2 font-inter"
+          >
+            {field.label}
+            {field.required && <span className="text-[#6E6E6E]"> *</span>}
+          </label>
+          <div className={`flex items-center border justify-between border-[#828282] ${formik.touched[field.name] && formik.errors[field.name]
+            ? "border-[#ef4444]"
+            : "border-[#828282]"} `}>
+            <input
+              type="email"
+              id={field.name}
+              name={field.name}
+              disabled={emailState.otpVerified}
+              placeholder={field.placeholder}
+              className={`flex-grow px-3 py-3  ${title ? 'max-w-[60%]' : 'max-w-[52%]'} sm:max-w-[1000px] focus:outline-none placeholder-[#BDBDBD]`}
+              onChange={(e) => {
+                formik.handleChange(e);
+                updateVerificationState(field.name, { verified: false, sent: false }); // reset status
+              }}
+              onBlur={formik.handleBlur}
+              value={formik.values[field.name] as string}
+            />
+            {!emailState.verified ? (
+              <button
+                type="button"
+                onClick={() => handleSendVerification(field.name)}
+                className="text-blue-600 font-medium max-w-[55%] text-sm px-4 py-3 cursor-pointer"
+                disabled={!formik.values[field.name] || !!formik.errors[field.name] || sendingVerifications[field.name]}
+              >
+                {sendingVerifications[field.name] ? "Sending..." : "Send Verification"}
+              </button>
+            ) : !emailState.otpVerified ? (
+              <span className="text-green-600 text-sm px-4 py-3">
+                {sendingVerifications[field.name] ? "Sending..." : "Sent Verification"}
+              </span>
+            ) : (
+              <span className="px-4 py-3">
+                <img src='/assets/icons/verified.png' width={20} height={20} alt="verified" />
+              </span>
+            )}
+          </div>
+
+          {emailState.sent && !formik.errors[field.name] && (
+            <div>
+              <div className="mt-4">
+                <label className="block text-[13px] font-medium text-[#6E6E6E] mb-2 font-inter">
+                  Enter OTP for Email Verification
+                </label>
+
+                <div className="flex items-center gap-4">
+                  {[...Array(4)].map((_, index) => (
+                    <input
+                      key={index}
+                      id={`otp-${field.name}-${index}`}
+                      type="text"
+                      maxLength={1}
+                      className="w-10 h-10 text-center border-b-2  text-[#107BC0] text-[16px] sm:text[24px] border-[#107BC0] outline-none"
+                      value={emailState.otp[index]}
+                      onChange={(e) => handleOtpChange(e.target.value, index, field.name)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, index, field.name)}
+                    />
+                  ))}
+
+                  {!emailState.otpVerified ? (
+                    <span className="text-sm text-gray-600 w-[50px]">
+                      {emailState.timer > 0 ? `00:${String(emailState.timer).padStart(2, "0")}` : null}
+                    </span>
+                  ) : (
+                    <span className="text-green-600 text-xl"></span>
+                  )}
+
+                  {!emailState.otpVerified ? (
+                    <button
+                      type="button"
+                      onClick={() => handleVerifyOtp(field.name)}
+                      className="bg-[#107BC0] text-white px-4 py-2 h-[40px] w-[102px] rounded-[20px] hover:bg-[#0D6BA3] text-sm"
+                    >
+                      VERIFY
+                    </button>
+                  ) : null}
+                </div>
+
+                {emailState.canResend && !emailState.otpVerified && (
+                  <button
+                    type="button"
+                    onClick={() => handleResendOtp(field.name)}
+                    className="mt-2 text-blue-600 text-sm"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+              {emailState.otpError && (
+                <p className="text-red-600 text-sm mt-2">Invalid OTP. Please try again.</p>
+              )}
+            </div>
+          )}
+
+          {formik.touched[field.name] && formik.errors[field.name] && (
+            <p className="mt-1 text-sm text-red-600">
+              {formik.errors[field.name] as string}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    // text 
     return (
       <div
         key={field.name}
@@ -606,134 +867,180 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
     </div>
   );
 
-  // ───────────────────────────
-  // JSX
-  // ───────────────────────────
   return (
-    <section
-      ref={sectionRef}
-      className={`py-3 md:py-16 bg-white relative overflow-visible font-[family-name:var(--font-inter)] ${className}`}
-    >
-      <div className="container mx-auto px-6 md:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          {formSubmitted ? (
-            renderSuccessMessage()
-          ) : (
-            <div className="flex flex-col md:flex-row gap-8">
-              {/* Heading */}
-              <div
-                className={`w-full md:w-1/3 md:mb-8 mb-0 transition-all duration-700 ease-out ${isVisible ? "slide-down-fade" : "opacity-0"
-                  }`}
-              >
-                {titleLines ? (
-                  <p className="text-[24px] md:text-[40px] font-[500] text-[#000000] mb-2 font-cormorant">
-                    {titleLines.map((line, i) => (
-                      <span key={i}>
-                        {line}
-                        {i < titleLines.length - 1 && <br />}
-                      </span>
-                    ))}
-                  </p>
-                ) : (
-                  <p className="text-[24px] md:text-[40px] font-[500] text-[#000000] mb-2 font-cormorant">
-                    {title}
-                  </p>
-                )}
-              </div>
+    <>
+      <>
+        <style jsx global>{`
+          .react-tel-input .country-list {
+            z-index: 99999 !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: white !important;
+            border: 1px solid #e0e0e0 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          .react-tel-input .country-list .search-box {
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 0 !important;
+          }
+          .react-tel-input .flag-dropdown {
+            z-index: 99999 !important;
+          }
+          .react-tel-input .flag-dropdown.open .selected-flag {
+            z-index: 99999 !important;
+          }
+          .react-tel-input .country-list .country {
+            padding: 12px 9px 13px 46px !important;
+          }
+          .react-tel-input .country-list .flag {
+            margin-top: 9px !important;
+          }
+        `}</style>
+      </>
+      <section
+        ref={sectionRef}
+        className={`py-3 ${title ? 'md:py-16' : ''} bg-white relative overflow-visible font-[family-name:var(--font-inter)] ${className}`}
+      >
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 4000,
+            error: {
+              duration: 5000,
+            },
+          }}
+        />
 
-              {/* Form */}
-              <div
-                className={`w-full md:w-2/3 transition-all duration-700 ease-out ${isVisible ? "slide-up-fade" : "opacity-0"
-                  }`}
-              >
-                <form onSubmit={formik.handleSubmit} className="space-y-6">
-                  {sections.map((section, sIdx) => (
-                    <div
-                      key={sIdx}
-                      className={
-                        section.isClient ? "space-y-4 pt-6" : "space-y-4"
-                      }
-                    >
-                      {section.title && (
-                        <h3
-                          className={`text-[16px] md:text-[20px] font-[500] text-[#000000] transition-all duration-700 ease-out ${isVisible ? "animate-slide-up" : "opacity-0"
-                            }`}
-                          style={{ animationDelay: `${sIdx * 200}ms` }}
-                        >
-                          {section.title}
-                        </h3>
-                      )}
-                      {section.fields.map((field, fIdx) =>
-                        renderField(field, sIdx * 4 + fIdx)
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Checkbox + policy */}
+        <div className="container mx-auto px-6 md:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            {formSubmitted ? (
+              renderSuccessMessage()
+            ) : (
+              <div className="flex flex-col md:flex-row gap-8">
+                {/* Heading */}
+                {title && (
                   <div
-                    className={`pt-2 space-y-3 transition-all duration-700 ease-out ${isVisible ? "animate-fade-in" : "opacity-0"
+                    className={`w-full md:w-1/3 md:mb-8 mb-0 transition-all duration-700 ease-out ${isVisible ? "slide-down-fade" : "opacity-0"
                       }`}
-                    style={{ animationDelay: "600ms" }}
                   >
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="subscribe"
-                          name="subscribe"
-                          type="checkbox"
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          onChange={formik.handleChange}
-                          checked={formik.values.subscribe as boolean}
-                        />
-                      </div>
-                      <div className="ml-3 text-[12px]">
-                        <label
-                          htmlFor="subscribe"
-                          className="font-medium text-[#6E6E6E] font-inter"
-                        >
-                          {checkboxLabel}
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="text-[12px] font-[400]">
-                      <p className="text-[#212529] font-inter">
-                        {privacyPolicyText.part1}{" "}
-                        <Link
-                          href="/privacy-policy"
-                          className="text-[#212529] font-[600] underline  font-inter"
-                        >
-                          {privacyPolicyText.linkText}
-                        </Link>{" "}
-                        {privacyPolicyText.part2}
+                    {titleLines ? (
+                      <p className="text-[24px] md:text-[40px] font-[500] text-[#000000] mb-2 font-cormorant">
+                        {titleLines.map((line, i) => (
+                          <span key={i}>
+                            {line}
+                            {i < titleLines.length - 1 && <br />}
+                          </span>
+                        ))}
                       </p>
-                    </div>
+                    ) : (
+                      <p className="text-[24px] md:text-[40px] font-[500] text-[#000000] mb-2 font-cormorant">
+                        {title}
+                      </p>
+                    )}
                   </div>
+                )}
 
-                  {/* Submit */}
-                  <div
-                    className={`flex justify-start pt-0 md:pt-4 transition-all duration-700 ease-out ${isVisible ? "animate-fade-in" : "opacity-0"
-                      }`}
-                    style={{ animationDelay: "700ms" }}
-                  >
-                    <button
-                      type="submit"
-                      className={`inline-flex py-3 px-12 border border-transparent text-sm font-medium rounded-full text-white bg-[#107BC0] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 ${isSubmitting ? "animate-pulse" : ""
+                {/* Form */}
+                <div
+                  className={`w-full md:w-2/3 ${title ? 'md:w-2/3' : 'md:w-[100%]'} transition-all duration-700 ease-out ${isVisible ? "slide-up-fade" : "opacity-0"
+                    }`}
+                  style={{ position: "relative", zIndex: 1 }}
+                >
+                  <form onSubmit={formik.handleSubmit} className="space-y-6">
+                    {sections.map((section, sIdx) => (
+                      <div
+                        key={sIdx}
+                        className={
+                          section.isClient ? "space-y-4 pt-6" : "space-y-4"
+                        }
+                      >
+                        {section.title && (
+                          <h3
+                            className={`text-[16px] md:text-[20px] font-[500] text-[#000000] transition-all duration-700 ease-out ${isVisible ? "animate-slide-up" : "opacity-0"
+                              }`}
+                            style={{ animationDelay: `${sIdx * 200}ms` }}
+                          >
+                            {section.title}
+                          </h3>
+                        )}
+                        {section.fields.map((field, fIdx) =>
+                          renderField(field, sIdx * 4 + fIdx)
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Checkbox + policy */}
+                    <div
+                      className={`pt-2 space-y-3 transition-all duration-700 ease-out ${isVisible ? "animate-fade-in" : "opacity-0"
                         }`}
-                      disabled={isSubmitting}
+                      style={{ animationDelay: "600ms" }}
                     >
-                      {isSubmitting
-                        ? `${submitButtonText.toUpperCase()}...`
-                        : submitButtonText}
-                    </button>
-                  </div>
-                </form>
+                      <div className="flex items-start">
+                        <div className="flex items-center h-5">
+                          <input
+                            id="subscribe"
+                            name="subscribe"
+                            type="checkbox"
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            onChange={formik.handleChange}
+                            checked={formik.values.subscribe as boolean}
+                          />
+                        </div>
+                        <div className="ml-3 text-[12px]">
+                          <label
+                            htmlFor="subscribe"
+                            className="font-medium text-[#6E6E6E] font-inter"
+                          >
+                            {checkboxLabel}
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="text-[12px] font-[400]">
+                        <p className="text-[#212529] font-inter">
+                          {privacyPolicyText.part1}{" "}
+                          <Link
+                            href="/privacy-policy"
+                            className="text-[#212529] font-[600] underline  font-inter"
+                            onClick={onClose}
+                          >
+                            {privacyPolicyText.linkText}
+                          </Link>{" "}
+                          {privacyPolicyText.part2}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Submit */}
+                    <div
+                      className={`flex justify-start pt-0 md:pt-4 transition-all duration-700 ease-out ${isVisible ? "animate-fade-in" : "opacity-0"
+                        }`}
+                      style={{ animationDelay: "700ms" }}
+                    >
+                      <button
+                        type="submit"
+                        className={`inline-flex py-3 px-12 border border-transparent text-sm font-medium rounded-full text-white bg-[#107BC0] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 ${isSubmitting ? "animate-pulse" : ""
+                          }`}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting
+                          ? `${submitButtonText.toUpperCase()}...`
+                          : submitButtonText}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

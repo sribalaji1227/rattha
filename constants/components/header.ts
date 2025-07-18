@@ -1,0 +1,1 @@
+export const whiteBgRoutes = ["/cookie-policy", "/privacy-policy", "/terms-of-use"];

@@ -1,4 +1,13 @@
+import { TimelineItem } from "@/types/common";
 import { homeIcon, bedIcon, sqftIcon } from "./assets";
+import {
+  enguireIcon,
+  phoneIcon,
+  whatsappIcon,
+  mapPinIcon,
+  quillChatIcon,
+} from "@/constants/assets";
+
 export interface NavItem {
   key: string;
   label: string;
@@ -208,21 +217,91 @@ export const careersPosition = [
   {
     id: 1,
     name: "Sales Executive",
+    description: "Responsible for generating leads and closing sales for real estate properties. You will work directly with clients, understanding their needs and offering properties that align with their goals. This role demands a proactive approach, as you will manage a pipeline of potential buyers and nurture those relationships through the sales process. The ideal candidate will be highly motivated, result-driven, and able to thrive in a competitive environment.",
+    responsibilities: [
+      "Develop sales strategies and attract new clients.",
+      "Manage leads and follow up with prospective customers.",
+      "Present properties and provide detailed information.",
+      "Negotiate deals and close sales."
+    ],
+    skills: [
+      "Excellent communication and negotiation skills.",
+      "Strong knowledge of the real estate market.",
+      "Proficiency in CRM software.",
+      "Ability to work under pressure and meet targets."
+    ]
   },
   {
     id: 2,
-    name: "Marketing Specialist",
+    name: "Revenue Accounting Specialist",
+    description: "Handles the promotion and advertising efforts to increase brand awareness. You will develop and execute strategies for online and offline marketing, focusing on building brand presence in the market. This role will involve content creation, campaign management, and collaboration with external agencies and teams to ensure marketing initiatives align with business objectives. Strong creativity and a data-driven mindset are essential in this position.",
+    responsibilities: [
+      "Plan and execute marketing campaigns.",
+      "Manage content for social media and website.",
+      "Coordinate events and promotions.",
+      "Conduct market research and competitor analysis."
+    ],
+    skills: [
+      "Strong understanding of marketing strategies.",
+      "Proficiency with digital marketing tools.",
+      "Creative thinking and problem-solving skills.",
+      "Excellent copywriting and design sense."
+    ]
   },
   {
     id: 3,
-    name: "Property Manager",
+    name: "Quality Surveyor Manager",
+    description: "Oversees the daily operations of real estate properties. In this role, you will be responsible for ensuring the smooth running of properties, from coordinating maintenance and repairs to managing tenant relations. You will also be in charge of ensuring properties are compliant with relevant laws and regulations, as well as handling budget management and financial oversight for the properties you manage. Strong leadership and organizational skills are required to succeed in this role.",
+    responsibilities: [
+      "Coordinate property maintenance and repairs.",
+      "Manage tenant relations and lease agreements.",
+      "Ensure property compliance with regulations.",
+      "Monitor budgets and financial records."
+    ],
+    skills: [
+      "Excellent organizational and leadership skills.",
+      "Knowledge of property management software.",
+      "Strong communication and problem-resolution abilities.",
+      "Understanding of local housing laws and regulations."
+    ]
   },
   {
     id: 4,
-    name: "Real Estate Analyst",
+    name: "Channel Partner Manager",
+    description: "Performs financial analysis of property investments. You will analyze market trends, evaluate property values, and generate investment reports to support the company's acquisition and sales decisions. A key part of this role is conducting risk assessments and providing recommendations based on financial forecasts. You will also assist in identifying potential investment opportunities and market trends to inform future strategic planning.",
+    responsibilities: [
+      "Analyze market trends and property values.",
+      "Prepare investment reports and forecasts.",
+      "Conduct risk assessments.",
+      "Support decision-making for acquisitions and sales."
+    ],
+    skills: [
+      "Strong analytical and financial modeling skills.",
+      "Proficient in Excel and data visualization tools.",
+      "Attention to detail and problem-solving ability.",
+      "Understanding of real estate and economic trends."
+    ]
   },
+  {
+    id: 5,
+    name: "Land Acquisition Manager",
+    description: "Performs financial analysis of property investments. You will analyze market trends, evaluate property values, and generate investment reports to support the company's acquisition and sales decisions. A key part of this role is conducting risk assessments and providing recommendations based on financial forecasts. You will also assist in identifying potential investment opportunities and market trends to inform future strategic planning.",
+    responsibilities: [
+      "Analyze market trends and property values.",
+      "Prepare investment reports and forecasts.",
+      "Conduct risk assessments.",
+      "Support decision-making for acquisitions and sales."
+    ],
+    skills: [
+      "Strong analytical and financial modeling skills.",
+      "Proficient in Excel and data visualization tools.",
+      "Attention to detail and problem-solving ability.",
+      "Understanding of real estate and economic trends."
+    ]
+  }
 ];
-  
+
+
 
 export const projectData = [
   {
@@ -238,7 +317,7 @@ export const projectData = [
     id: 3,
     image: "/assets/images/partnerRefHeroBanner.png",
   },
-]; 
+];
 
 export const propertyData = [
   {
@@ -551,3 +630,427 @@ export const projectDetails = [
   { icon: sqftIcon, text: "1588 sft - 2680 sft" },
   { icon: bedIcon, text: "3BR - 4.5 BR" },
 ];
+
+
+export const constructionData = [
+  {
+    image: "/assets/images/construction-1.png",
+    alt: "Excavation work at Ratttha Grandéur – Dec 2024",
+    caption: "Dec 2024",
+  },
+  {
+    image: "/assets/images/construction-2.png",
+    alt: "Rebar layout at Ratttha Grandéur – Dec 2024",
+    caption: "Dec 2024",
+  },
+  {
+    image: "/assets/images/construction-1.png",
+    alt: "Excavation work at Ratttha Grandéur – Dec 2024",
+    caption: "Dec 2024",
+  },
+  {
+    image: "/assets/images/construction-2.png",
+    alt: "Rebar layout at Ratttha Grandéur – Dec 2024",
+    caption: "Dec 2024",
+  },
+  {
+    image: "/assets/images/construction-1.png",
+    alt: "Excavation work at Ratttha Grandéur – Dec 2024",
+    caption: "Dec 2024",
+  },
+  {
+    image: "/assets/images/construction-2.png",
+    alt: "Rebar layout at Ratttha Grandéur – Dec 2024",
+    caption: "Dec 2024",
+  },
+];
+
+
+export const landmarksData = [
+  // Hospitals
+  {
+    name: "MGM Healthcare",
+    lat: 12.9935,
+    lng: 80.2157,
+    category: "Hospitals",
+    distance: "700 m",
+  },
+  {
+    name: "CFC Hospital",
+    lat: 12.995,
+    lng: 80.2181,
+    category: "Hospitals",
+    distance: "200 m",
+  },
+  {
+    name: "Dr. Mehta's Hospitals",
+    lat: 12.995,
+    lng: 80.2181,
+    category: "Hospitals",
+    distance: "2 km",
+  },
+  //Dummy Data
+  // Colleges
+  {
+    name: "SRM Institute of Science and Technology",
+    lat: 12.8235,
+    lng: 80.0457,
+    category: "Colleges",
+    distance: "4.5 km",
+  },
+  {
+    name: "Loyola College",
+    lat: 13.0695,
+    lng: 80.2337,
+    category: "Colleges",
+    distance: "8 km",
+  },
+
+  // Schools
+  {
+    name: "DAV Public School",
+    lat: 12.9902,
+    lng: 80.2201,
+    category: "Schools",
+    distance: "500 m",
+  },
+  {
+    name: "PSBB Millennium School",
+    lat: 12.9872,
+    lng: 80.2235,
+    category: "Schools",
+    distance: "1.1 km",
+  },
+
+  // Malls
+  {
+    name: "Phoenix Marketcity",
+    lat: 12.9948,
+    lng: 80.2189,
+    category: "Malls",
+    distance: "2.5 km",
+  },
+  {
+    name: "Express Avenue Mall",
+    lat: 13.0606,
+    lng: 80.2612,
+    category: "Malls",
+    distance: "9 km",
+  },
+
+  // Metro Stations
+  {
+    name: "Little Mount Metro Station",
+    lat: 13.0121,
+    lng: 80.2231,
+    category: "Metro Stations",
+    distance: "1.8 km",
+  },
+  {
+    name: "Guindy Metro Station",
+    lat: 13.0073,
+    lng: 80.2219,
+    category: "Metro Stations",
+    distance: "2.2 km",
+  },
+
+  // Hotels
+  {
+    name: "Taj Club House",
+    lat: 13.0611,
+    lng: 80.2613,
+    category: "Hotels",
+    distance: "9.2 km",
+  },
+  {
+    name: "The Leela Palace Chennai",
+    lat: 13.0065,
+    lng: 80.2596,
+    category: "Hotels",
+    distance: "6.5 km",
+  },
+];
+
+ 
+export const categories = [
+  "Hospitals",
+  "Colleges",
+  "Schools",
+  "Malls",
+  "Metro Stations",
+  "Hotels",
+];
+
+
+export const timelineItems: TimelineItem[] = [
+    {
+      year: '2025',
+      active: true,
+      title: 'FUTURE INNOVATION AWARD',
+      description: 'Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2024',
+      active: true,
+      title: 'EXCELLENCE IN DESIGN',
+      description: 'Curabitur aliquet quam id dui posuere blandit. Nulla quis lorem ut libero malesuada feugiat.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2023',
+      active: true,
+      title: 'BEST DEVELOPMENT OF THE YEAR',
+      description: 'Lorem ipsum Dolor Sit Amet Consectetur. Mauris Leo Pharetra Convallis.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2022',
+      active: true,
+      title: 'STARTUP OF THE YEAR',
+      description: 'Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Donec rutrum congue leo eget malesuada.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2021',
+      active: true,
+      title: 'DIGITAL TRANSFORMATION LEADER',
+      description: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2020',
+      active: true,
+      title: 'RESILIENCE AWARD',
+      description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2019',
+      active: true,
+      title: 'CUSTOMER SATISFACTION EXCELLENCE',
+      description: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2018',
+      active: true,
+      title: 'SUSTAINABLE DEVELOPMENT AWARD',
+      description: 'Et harum quidem rerum facilis est et expedita distinctio nam libero tempore.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2017',
+      active: true,
+      title: 'INNOVATION IN REAL ESTATE',
+      description: 'Cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2016',
+      active: true,
+      title: 'MARKET EXPANSION SUCCESS',
+      description: 'Placeat facere possimus omnis voluptas assumenda est omnis dolor repellendus.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2015',
+      active: true,
+      title: 'TECHNOLOGY INTEGRATION AWARD',
+      description: 'Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2014',
+      active: true,
+      title: 'QUALITY ASSURANCE EXCELLENCE',
+      description: 'Ut enim ad minima veniam quis nostrum exercitationem ullam corporis suscipit laboriosam.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2013',
+      active: true,
+      title: 'COMMUNITY DEVELOPMENT LEADER',
+      description: 'Nisi ut aliquid ex ea commodi consequatur quis autem vel eum iure reprehenderit.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2012',
+      active: true,
+      title: 'ARCHITECTURAL INNOVATION',
+      description: 'Qui in ea voluptate velit esse quam nihil molestiae consequatur vel illum qui dolorem.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2011',
+      active: true,
+      title: 'LANDMARK PROJECT COMPLETION',
+      description: 'Eum fugiat quo voluptas nulla pariatur at vero eos et accusamus et iusto odio.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2010',
+      active: true,
+      title: 'DECADE OF EXCELLENCE',
+      description: 'Dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2009',
+      active: true,
+      title: 'CRISIS MANAGEMENT AWARD',
+      description: 'Et quas molestias excepturi sint occaecati cupiditate non provident similique sunt.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2008',
+      active: true,
+      title: 'LUXURY SEGMENT PIONEER',
+      description: 'In culpa qui officia deserunt mollitia animi id est laborum et dolorum fuga.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2007',
+      active: true,
+      title: 'REGIONAL EXPANSION SUCCESS',
+      description: 'Et harum quidem rerum facilis est et expedita distinctio nam libero tempore.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2006',
+      active: true,
+      title: 'CUSTOMER TRUST AWARD',
+      description: 'Cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2005',
+      active: true,
+      title: 'QUALITY CONSTRUCTION AWARD',
+      description: 'Maxime placeat facere possimus omnis voluptas assumenda est omnis dolor repellendus.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2004',
+      active: true,
+      title: 'SAFETY STANDARDS EXCELLENCE',
+      description: 'Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2003',
+      active: true,
+      title: 'DESIGN INNOVATION AWARD',
+      description: 'Eveniet ut et voluptates repudiandae sint et molestiae non recusandae itaque earum.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2002',
+      active: true,
+      title: 'MILESTONE PROJECT DELIVERY',
+      description: 'Rerum hic tenetur a sapiente delectus ut aut reiciendis voluptatibus maiores alias.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2001',
+      active: true,
+      title: 'NEW MILLENNIUM VISION',
+      description: 'Consequatur aut perferendis doloribus asperiores repellat nam libero tempore cum soluta.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '2000',
+      active: true,
+      title: 'Y2K TRANSITION SUCCESS',
+      description: 'Nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1999',
+      active: true,
+      title: 'CENTURY END ACHIEVEMENT',
+      description: 'Facere possimus omnis voluptas assumenda est omnis dolor repellendus temporibus autem.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1998',
+      active: true,
+      title: 'MARKET LEADERSHIP AWARD',
+      description: 'Quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1997',
+      active: true,
+      title: 'CONSTRUCTION EXCELLENCE',
+      description: 'Repudiandae sint et molestiae non recusandae itaque earum rerum hic tenetur a sapiente.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1996',
+      active: true,
+      title: 'TEAM ACHIEVEMENT AWARD',
+      description: 'Delectus ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1995',
+      active: true,
+      title: 'MID-DECADE MILESTONE',
+      description: 'Asperiores repellat nam libero tempore cum soluta nobis est eligendi optio cumque.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1994',
+      active: true,
+      title: 'GROWTH ACCELERATION',
+      description: 'Nihil impedit quo minus id quod maxime placeat facere possimus omnis voluptas.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1993',
+      active: true,
+      title: 'STRATEGIC PARTNERSHIP',
+      description: 'Assumenda est omnis dolor repellendus temporibus autem quibusdam et aut officiis debitis.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1992',
+      active: true,
+      title: 'OPERATIONAL EXCELLENCE',
+      description: 'Aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1991',
+      active: true,
+      title: 'FOUNDATION STRENGTHENING',
+      description: 'Non recusandae itaque earum rerum hic tenetur a sapiente delectus ut aut reiciendis.',
+      imageSrc: '/assets/images/milestone.png'
+    },
+    {
+      year: '1990',
+      active: true,
+      title: 'COMPANY ESTABLISHMENT',
+      description: 'Voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.',
+      imageSrc: '/assets/images/milestone.png'
+    }
+  ];
+
+
+export const navItems = [
+    { id: "enquire", icon: enguireIcon, text: "ENQUIRE", mobileOrder: 1 },
+    { id: "call", icon: phoneIcon, text: "CALL", mobileOrder: 2 },
+    { id: "whatsapp", icon: whatsappIcon, text: "WHATSAPP", mobileOrder: null },
+    { id: "schedule", icon: mapPinIcon, text: "SCHEDULE", mobileOrder: null },
+    { id: "chat", icon: quillChatIcon, text: "CHAT", mobileOrder: 3 },
+  ];
+
+export  const tableData = [
+    { installment: "DEPOSIT", milestone: "Immediate", payment: "24" },
+    { installment: "1ST INSTALLMENT", milestone: "Within 3 month(s) of Sale Date", payment: "1" },
+    { installment: "2ND INSTALLMENT", milestone: "Within 4 month(s) of Sale Date", payment: "1" },
+    { installment: "3RD INSTALLMENT", milestone: "Within 5 month(s) of Sale Date", payment: "1" },
+    { installment: "4TH INSTALLMENT", milestone: "Within 6 month(s) of Sale Date", payment: "1" },
+    { installment: "5TH INSTALLMENT", milestone: "Within 7 month(s) of Sale Date", payment: "10" },
+  ];

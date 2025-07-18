@@ -1,5 +1,5 @@
-import { BlogPost } from "@/app/media-center/page";
-import { PressCoverageArticle } from "@/components/media-center/BlogContent/PressCoverageContent";
+import { PressCoverageArticle } from "@/types/mediaCenter";
+import { BlogPost } from "../types/mediaCenter";
 
 export const CHANNEL_MEDIA_CONFIG = {
   hero: {
@@ -23,7 +23,66 @@ export const CHANNEL_MEDIA_CONFIG = {
   }
 };
 
+
 export const JV_MEDIA_FORM_SECTIONS = [
+  {
+    fields: [
+      {
+        name: "fullName",
+        type: "text" as const,
+        label: "FULL NAME",
+        placeholder: "ENTER FULL NAME",
+        required: true
+      },
+      {
+        name: "email",
+        type: "email" as const,
+        label: "EMAIL ADDRESS",
+        placeholder: "ENTER YOUR EMAIL",
+        required: true
+      },
+      {
+        name: "phone",
+        type: "tel" as const,
+        label: "PHONE NUMBER",
+        placeholder: "ENTER YOUR PHONE NUMBER",
+        required: true
+      },
+      {
+        name: "message",
+        type: "textarea" as const,
+        label: "MESSAGE",
+        placeholder: "MESSAGE",
+        required: true
+      }
+    ]
+  }
+];
+
+export const ENQUIRY_CONFIG = {
+  hero: {
+    desktop: {
+      lines: ["STORIES", "WORTH SHAREING."]
+    },
+    mobile: {
+      lines: ["STORIES", "WORTH SHAREING."]
+    }
+  },
+  registerForm: {
+    title: "REGISTER YOUR INTEREST",
+    titleLines: ["REGISTER YOUR", "INTEREST"],
+    submitButtonText: "SUBMIT",
+    checkboxLabel: "Keep Me Updated On News And Offers",
+    privacyPolicyText: {
+      part1: "Please Visit The",
+      linkText: "Privacy Policy",
+      part2: "To Understand How Rattha Realty Handles Your Personal Data"
+    }
+  }
+};
+
+
+export const ENQUIRY_FORM_SECTIONS = [
   {
     fields: [
       {

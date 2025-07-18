@@ -114,6 +114,40 @@ export const CHANNEL_PARTNERS_FORM_SECTIONS = [
         placeholder: "ENTER YOUR PHONE NUMBER",
         required: true
       },
+      // {
+      //   name: "message",
+      //   type: "textarea" as const,
+      //   label: "MESSAGE",
+      //   placeholder: "MESSAGE",
+      //   required: false
+      // }
+    ]
+  },
+  {
+    title: "DETAILS OF YOUR CLIENT",
+    isClient: true,
+    fields: [
+      {
+        name: "clientFullName",
+        type: "text" as const,
+        label: "FULL NAME",
+        placeholder: "ENTER FULL NAME",
+        required: true
+      },
+      {
+        name: "clientPhone",
+        type: "tel" as const,
+        label: "PHONE NUMBER",
+        placeholder: "ENTER YOUR PHONE NUMBER",
+        required: true
+      },
+      {
+        name: "clientEmail",
+        type: "email" as const,
+        label: "EMAIL ADDRESS",
+        placeholder: "ENTER YOUR EMAIL",
+        required: true
+      },
       {
         name: "message",
         type: "textarea" as const,
@@ -122,41 +156,7 @@ export const CHANNEL_PARTNERS_FORM_SECTIONS = [
         required: false
       }
     ]
-  },
-  // {
-  //   title: "DETAILS OF YOUR CLIENT",
-  //   isClient: true,
-  //   fields: [
-  //     {
-  //       name: "clientFullName",
-  //       type: "text" as const,
-  //       label: "FULL NAME",
-  //       placeholder: "ENTER FULL NAME",
-  //       required: true
-  //     },
-  //     {
-  //       name: "clientPhone",
-  //       type: "tel" as const,
-  //       label: "PHONE NUMBER",
-  //       placeholder: "ENTER YOUR PHONE NUMBER",
-  //       required: true
-  //     },
-  //     {
-  //       name: "clientEmail",
-  //       type: "email" as const,
-  //       label: "EMAIL ADDRESS",
-  //       placeholder: "ENTER YOUR EMAIL",
-  //       required: true
-  //     },
-  //     {
-  //       name: "message",
-  //       type: "textarea" as const,
-  //       label: "MESSAGE",
-  //       placeholder: "MESSAGE",
-  //       required: false
-  //     }
-  //   ]
-  // }
+  }
 ];
 
 
