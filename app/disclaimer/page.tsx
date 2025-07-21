@@ -2,7 +2,7 @@ export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen">
       <section>
-        <div className="max-w-[1162px] mx-auto">
+        <div className="max-w-[1162px] mx-auto p-[40px] md-p-0">
           <h2 className="font-inter text-[#101114] text-[30px] font-bold mb-4 mt-4 uppercase">
             DISCLAIMER
           </h2>
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
             subsidiary companies be liable for any direct, indirect, special,
             incidental, or consequential damages arising out of the use of the
             information herein.
-          </p> 
+          </p>
         </div>
       </section>
     </main>

@@ -5,20 +5,19 @@ import Image from "next/image";
 import EnquireNowModal from "./Common/EnquireNowModal";
 
 const LaunchScreen: React.FC = () => {
-  const [isEnquireNowOpen, setIsEnquireNowOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isEnquireNowOpen, setIsEnquireNowOpen] = useState(false); 
 
 const socialLinks = [
-  { icon: "/assets/icons/facebook.png", url: "https://www.facebook.com/" },
+  { icon: "/assets/fb.svg", url: "https://www.facebook.com/" },
   {
-    icon: "/assets/icons/instagram.png",
+    icon: "/assets/lg.svg",
     url: "https://www.instagram.com/rattharealty/",
   },
   {
-    icon: "/assets/icons/linkedin.png",
+    icon: "/assets/li.svg",
     url: "https://www.linkedin.com/company/rattha-realty/?viewAsMember=true",
   },
-  { icon: "/assets/icons/twitter.png", url: "https://x.com/Rattharealty" }
+  { icon: "/assets/xl.svg", url: "https://x.com/Rattharealty" },
 ];
 
 
@@ -29,7 +28,7 @@ const socialLinks = [
         <div className="relative w-full h-screen overflow-hidden">
           {/* Background (mobile) */}
           <Image
-            src="/assets/banner1.jpg"
+            src="/assets/abstract_bg1.jpg"
             alt="Hero Background (mobile)"
             fill
             className="object-cover"
@@ -98,8 +97,17 @@ const socialLinks = [
                 </a>
               ))}
             </div>
-            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter">
-              PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
+            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter pb-0"> 
+              <a
+                className="cursor-pointer hover:underline font-inter"
+                href="/privacy-policy"
+              >
+                PRIVACY POLICY&nbsp;
+              </a>
+              <span className="mx-1">|</span>
+              <a className="cursor-pointer hover:underline" href="/disclaimer">
+                &nbsp;DISCLAIMER
+              </a>
             </div>
             <div className="py-2 px-4 text-[11px] text-center font-inter">
               © RATTHA REALTY 2025 | ALL RIGHTS RESERVED
@@ -121,7 +129,7 @@ const socialLinks = [
           <source src="/assets/launch.mp4" type="video/mp4" />
         </video> */}
         <Image
-          src="/assets/banner1.jpg"
+          src="/assets/abstract_bg1.jpg"
           alt="Background"
           fill
           className="object-cover"
