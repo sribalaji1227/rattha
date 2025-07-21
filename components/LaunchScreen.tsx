@@ -8,7 +8,7 @@ const LaunchScreen: React.FC = () => {
   const [isEnquireNowOpen, setIsEnquireNowOpen] = useState(false); 
 
 const socialLinks = [
-  { icon: "/assets/fb.svg", url: "https://www.facebook.com/" },
+  { icon: "/assets/fb.svg", url: "https://www.facebook.com/share/1FsGsAQMWC/" },
   {
     icon: "/assets/lg.svg",
     url: "https://www.instagram.com/rattharealty/",
@@ -28,7 +28,7 @@ const socialLinks = [
         <div className="relative w-full h-screen overflow-hidden">
           {/* Background (mobile) */}
           <Image
-            src="/assets/abstract_bg1.jpg"
+            src="/assets/abstract_bg2.jpg"
             alt="Hero Background (mobile)"
             fill
             className="object-cover"
@@ -97,7 +97,7 @@ const socialLinks = [
                 </a>
               ))}
             </div>
-            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter pb-0"> 
+            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter pb-0">
               <a
                 className="cursor-pointer hover:underline font-inter"
                 href="/privacy-policy"
@@ -129,7 +129,7 @@ const socialLinks = [
           <source src="/assets/launch.mp4" type="video/mp4" />
         </video> */}
         <Image
-          src="/assets/abstract_bg1.jpg"
+          src="/assets/abstract_bg2.jpg"
           alt="Background"
           fill
           className="object-cover"
@@ -170,7 +170,7 @@ const socialLinks = [
           <div className="hidden md:flex w-full justify-between items-center relative">
             <div className="text-sm leading-[24px] animate-fade-in ml-[50px] font-inter">
               <span className="font-light text-sm mr-1">&copy;</span>
-              RATHA REALTY 2025 &nbsp; | &nbsp; ALL RIGHTS RESERVED
+              RATTHA REALTY 2025 &nbsp; | &nbsp; ALL RIGHTS RESERVED
             </div>
             <div className="absolute left-1/2 transform -translate-x-1/2 flex gap-4 animate-scale-in-fade">
               {socialLinks.map((item, i) => (
@@ -200,7 +200,10 @@ const socialLinks = [
                 PRIVACY POLICY&nbsp;
               </a>
               <span className="mx-1">|</span>
-              <a className="cursor-pointer hover:underline" href="/disclaimer">
+              <a
+                className="cursor-pointer hover:underline font-inter"
+                href="/disclaimer"
+              >
                 &nbsp;DISCLAIMER
               </a>
               {/* <button
