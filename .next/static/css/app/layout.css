@@ -829,6 +829,10 @@ video {
   margin-top: auto;
   margin-bottom: auto;
 }
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
 .-mt-\[73px\] {
   margin-top: -73px;
 }

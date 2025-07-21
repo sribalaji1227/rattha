@@ -110,7 +110,7 @@ const socialLinks = [
               </a>
             </div>
             <div className="py-2 px-4 text-[11px] text-center font-inter">
-              © RATTHA REALTY 2025 | ALL RIGHTS RESERVED
+              © RATTHA REALTY 2025 &nbsp;| &nbsp; ALL RIGHTS RESERVED
             </div>
           </div>
         </div>
