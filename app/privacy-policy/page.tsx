@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
            <p className="text-[#787878] font-inter text-[20px] font-medium mb-8 text-justify">
              If you have any questions about this Privacy Policy, the practices
              of this site, or your dealings with this site, please contact us
-             at: RATTHA REALTY, Bengaluru (+91 7200181818).
+             at: RATTHA REALTY, Chennai (+91 7200181818).
            </p>
          </div>
        </section>
