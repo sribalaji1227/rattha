@@ -1,18 +1,12 @@
-// components/LaunchScreen.tsx
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import EnquireNowModal from "./Common/EnquireNowModal";
-import { ChevronUp } from "lucide-react";
 
 const LaunchScreen: React.FC = () => {
   const [isEnquireNowOpen, setIsEnquireNowOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
 
 const socialLinks = [
   { icon: "/assets/icons/facebook.png", url: "https://www.facebook.com/" },
@@ -24,8 +18,7 @@ const socialLinks = [
     icon: "/assets/icons/linkedin.png",
     url: "https://www.linkedin.com/company/rattha-realty/?viewAsMember=true",
   },
-  { icon: "/assets/icons/twitter.png", url: "https://x.com/Rattharealty" },
-  { icon: "/assets/icons/youtube.png", url: "https://www.youtube.com/" },
+  { icon: "/assets/icons/twitter.png", url: "https://x.com/Rattharealty" }
 ];
 
 
@@ -36,7 +29,7 @@ const socialLinks = [
         <div className="relative w-full h-screen overflow-hidden">
           {/* Background (mobile) */}
           <Image
-            src="/assets/images/grey.jpg"
+            src="/assets/banner1.jpg"
             alt="Hero Background (mobile)"
             fill
             className="object-cover"
@@ -52,25 +45,25 @@ const socialLinks = [
           </video> */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full z-10">
             <Image
-              src="/assets/onePage/desktop_logo.svg"
+              src="/assets/logo4.svg"
               alt="Logo"
-              className="w-80 md:w-[600px] max-w-[110vw] object-contain"
+              className="w-60 md:w-[400px] max-w-[110vw] object-contain"
               width={0}
               height={0}
             />
           </div>
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4 space-y-2 text-center">
-            <div className="text-[12px] font-semibold tracking-wide text-white pt-[30px] pb-[20px] mt-[40vh] font-inter">
+            <div className="text-[12px] font-semibold tracking-wide text-[#959494]  pt-[30px] pb-[20px] mt-[34vh] font-inter">
               BE THE FIRST TO KNOW
             </div>
             <button
               className="
                 mt-1
-                border border-white
+                border border-[#959494] 
                 rounded-full
                 px-6 py-2
                 text-[14px] font-semibold
-                text-white
+                text-[#959494] 
                 hover:bg-white hover:text-black
                 transition
                 font-inter
@@ -81,13 +74,7 @@ const socialLinks = [
             </button>
           </div>
           <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0] text-white text-left text-[12px]">
-            <div className="py-2 px-4 text-[11px] text-center font-inter">
-              © RATTHA REALTY 2025 | ALL RIGHTS RESERVED
-            </div>
-            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter">
-              PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
-            </div>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center my-2">
               {socialLinks.map((item, i) => (
                 <a
                   key={i}
@@ -111,6 +98,12 @@ const socialLinks = [
                 </a>
               ))}
             </div>
+            <div className="py-2 px-4 border-t border-white/25 text-[11px] text-center font-inter">
+              PRIVACY POLICY&nbsp;|&nbsp;DISCLAIMER
+            </div>
+            <div className="py-2 px-4 text-[11px] text-center font-inter">
+              © RATTHA REALTY 2025 | ALL RIGHTS RESERVED
+            </div>
           </div>
         </div>
       </div>
@@ -128,19 +121,19 @@ const socialLinks = [
           <source src="/assets/launch.mp4" type="video/mp4" />
         </video> */}
         <Image
-          src="/assets/images/grey.jpg"
+          src="/assets/banner1.jpg"
           alt="Background"
           fill
           className="object-cover"
         />
 
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full z-10">
+        <div className="absolute top-[52%] left-1/2 transform -translate-x-1/2 -translate-y-full z-10">
           <Image
-            src="/assets/onePage/desktop_logo.svg"
+            src="/assets/logo4.svg"
             alt="Logo"
-            className="w-100 md:w-[900px] max-w-[160vw] object-contain"
-            width={0}
-            height={0}
+            className="w-100 md:w-[660px] max-w-[130vw] object-contain"
+            width={100}
+            height={100}
           />
         </div>
 
@@ -151,13 +144,11 @@ const socialLinks = [
             className="flex flex-col items-center w-full mx-auto"
             style={{ minHeight: "60vh" }}
           >
-            <div className=" font-bold text-[16px] mb-10 text-white mt-[73vh] font-inter">
+            <div className=" font-bold text-[16px] mb-10 text-[#959494] mt-[73vh] font-inter">
               BE THE FIRST TO KNOW
             </div>
-
-            {/* Button - with minimum margin below */}
             <button
-              className="font-inter border border-white rounded-full px-8 py-3 text-[14px] font-bold text-white mb-[15vh] hover:bg-white hover:text-black transition"
+              className="font-inter border border-[#959494] rounded-full px-8 py-4 text-[14px] font-bold text-[#959494] mb-[15vh] hover:bg-white hover:text-black transition relative top-[-13px]"
               onClick={() => setIsEnquireNowOpen(true)}
             >
               ENQUIRE NOW
@@ -204,7 +195,7 @@ const socialLinks = [
               <a className="cursor-pointer hover:underline" href="/disclaimer">
                 &nbsp;DISCLAIMER
               </a>
-              <button
+              {/* <button
                 onClick={toggleExpand}
                 className="ml-1 focus:outline-none"
                 aria-label={isExpanded ? "Collapse" : "Expand"}
@@ -215,7 +206,7 @@ const socialLinks = [
                     isExpanded ? "rotate-180" : ""
                   }`}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

@@ -68,15 +68,15 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <Image
               src={logo}
               width={223}
-              height={45}
+              height={95}
               alt="RATTHA REALTY Logo"
-              className="w-[180px] md:w-[223px] h-auto mx-auto"
+              className="w-[230px] md:w-[223px] h-auto mx-auto"
               priority
             />
           </div>
 
           {/* Decorative Line - Progress Indicator */}
-          <div className="w-32 md:w-40 h-[2px] bg-gray-700 mx-auto mb-6 md:mb-8 overflow-hidden">
+          <div className="w-[160px] md:w-40 h-[2px] bg-gray-700 mx-auto mb-6 md:mb-8 overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 transition-all duration-300 ease-out shadow-lg"
               style={{

@@ -170,14 +170,14 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
         fieldsToVerify.push("clientEmail", "clientPhone");
       }
 
-      const unverifiedFields = fieldsToVerify.filter(
-        (field) => !getVerificationState(field).otpVerified
-      );
+      // const unverifiedFields = fieldsToVerify.filter(
+      //   (field) => !getVerificationState(field).otpVerified
+      // );
 
-      if (unverifiedFields.length > 0) {
-        toast.error("Please verify all required fields (email and phone) before submitting.");
-        return;
-      }
+      // if (unverifiedFields.length > 0) {
+      //   toast.error("Please verify all required fields (email and phone) before submitting.");
+      //   return;
+      // }
 
       setIsSubmitting(true);
       const submissionData =
@@ -380,12 +380,12 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
     const phoneRaw = isClient ? formik.values["clientPhone"] : formik.values["phone"];
     const formattedPhone = `+${phoneRaw}`;
 
-    const emailKey = isClient ? "clientEmail" : "email";
-    if (isPhone && !getVerificationState(emailKey)?.otpVerified) {
-      toast.error("Please verify email before phone.");
-      setSendingVerifications(prev => ({ ...prev, [fieldName]: false }));
-      return;
-    }
+    // const emailKey = isClient ? "clientEmail" : "email";
+    // if (isPhone && !getVerificationState(emailKey)?.otpVerified) {
+    //   toast.error("Please verify email before phone.");
+    //   setSendingVerifications(prev => ({ ...prev, [fieldName]: false }));
+    //   return;
+    // }
 
     const endpoint = isPhone
       ? "http://doodlebluelive.com:2057/api/enquire/send-phone-otp"
@@ -559,7 +559,7 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
                 }}
               />
             </div>
-            {!phoneState.verified ? (
+            {/* {!phoneState.verified ? (
               <button
                 type="button"
                 onClick={() => handleSendVerification(field.name)}
@@ -576,7 +576,7 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
               <span className="px-4 py-3">
                 <img src='/assets/icons/verified.png' width={20} height={20} alt="verified" />
               </span>
-            )}
+            )} */}
           </div>
 
           {phoneState.sent && (
@@ -705,7 +705,7 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
               name={field.name}
               disabled={emailState.otpVerified}
               placeholder={field.placeholder}
-              className={`flex-grow px-3 py-3  ${title ? 'max-w-[60%]' : 'max-w-[52%]'} sm:max-w-[1000px] focus:outline-none placeholder-[#BDBDBD]`}
+              className={`flex-grow px-3 py-3  ${title ? 'max-w-[60%]' : 'max-w-[100%]'} sm:max-w-[1000px] focus:outline-none placeholder-[#BDBDBD]`}
               onChange={(e) => {
                 formik.handleChange(e);
                 updateVerificationState(field.name, { verified: false, sent: false }); // reset status
@@ -713,7 +713,7 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
               onBlur={formik.handleBlur}
               value={formik.values[field.name] as string}
             />
-            {!emailState.verified ? (
+            {/* {!emailState.verified ? (
               <button
                 type="button"
                 onClick={() => handleSendVerification(field.name)}
@@ -730,7 +730,7 @@ const RegisterInterestForm: React.FC<RegisterInterestFormProps> = ({
               <span className="px-4 py-3">
                 <img src='/assets/icons/verified.png' width={20} height={20} alt="verified" />
               </span>
-            )}
+            )} */}
           </div>
 
           {emailState.sent && !formik.errors[field.name] && (
