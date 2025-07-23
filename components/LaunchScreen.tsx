@@ -51,11 +51,11 @@ const socialLinks = [
               height={0}
             />
           </div>
-          <div className="absolute inset-0 flex flex-col items-center justify-center px-4 space-y-2 text-center">
+          {/* <div className="absolute inset-0 flex flex-col items-center justify-center px-4 space-y-2 text-center">
             <div className="text-[12px] font-semibold tracking-wide text-[#959494]  pt-[30px] pb-[20px] mt-[48vh] font-inter">
               BE THE FIRST TO KNOW
             </div>
-            {/* <button
+            <button
               className="
                 mt-1
                 border border-[#959494] 
@@ -70,8 +70,8 @@ const socialLinks = [
               onClick={() => setIsEnquireNowOpen(true)}
             >
               ENQUIRE NOW
-            </button> */}
-          </div>
+            </button>
+          </div> */}
           <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0] text-white text-left text-[12px]">
             <div className="flex justify-center items-center my-2">
               {socialLinks.map((item, i) => (
@@ -146,8 +146,7 @@ const socialLinks = [
         </div>
 
         {/* MAIN CONTENT AREA WITH SAFE SPACING */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* This container ensures minimum spacing */}
+        {/* <div className="absolute inset-0 flex flex-col items-center justify-center"> 
           <div
             className="flex flex-col items-center w-full mx-auto"
             style={{ minHeight: "60vh" }}
@@ -155,14 +154,14 @@ const socialLinks = [
             <div className=" font-bold text-[16px] mb-10 text-[#959494] mt-[77vh] font-inter">
               BE THE FIRST TO KNOW
             </div>
-            {/* <button
+            <button
               className="font-inter border border-[#959494] rounded-full px-8 py-4 text-[14px] font-bold text-[#959494] mb-[15vh] hover:bg-white hover:text-black transition relative top-[-13px]"
               onClick={() => setIsEnquireNowOpen(true)}
             >
               ENQUIRE NOW
-            </button> */}
+            </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Footer - Fixed at bottom */}
         <div className="absolute bottom-0 left-0 right-0 bg-[#107BC0] h-14 flex items-center text-white text-sm">
