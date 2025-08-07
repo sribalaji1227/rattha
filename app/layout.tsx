@@ -3,12 +3,14 @@ import "./globals.css";
 import AppLayout from "@/components/loader/AppLayout"; 
 import { Cormorant_Garamond, Inter } from "next/font/google"; 
 
+
 export const metadata: Metadata = {
-  title: "Rattha",
-  description: "Crafting legacies beyond luxury",
+  title: "Rattha Realty | Luxury Real Estate Developer in India",
+  description:
+    "Discover premium real estate developer in Chennai, India with Rattha Realty – a trusted luxury property developer crafting iconic residential projects for discerning homeowners.",
   icons: {
     icon: "/favicon.ico",
-    apple: "/apple‐touch‐icon.png",
+    apple: "/apple-touch-icon.png",  
   },
   themeColor: "#e0f0ff",
 };
